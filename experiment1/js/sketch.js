@@ -15,7 +15,8 @@ let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
 let exampleScroll = "War! The Republic is crumbling under attacks by the ruthless Sith Lord, Count Dooku. There are heroes on both sides. Evil is everywhere. \n\nIn a stunning move, the fiendish droid leader, General Grievous, has swept into the Republic capital and kidnapped Chancellor Palpatine, leader of the Galactic Senate. \n\nAs the Separatist Droid Army attempts to flee the besieged capital with their valuable hostage, two Jedi Knights lead a desperate mission to rescue the captive Chancellor...."
-let scroll = getScroll();
+let scroll = getScroll().scroll;
+let title = getScroll().title;
 let pause = false;
 let restart = false;
 
@@ -63,7 +64,7 @@ function draw() {
   textSize(width/12);
   fill(255, 200, 0);
   // only show text when not restarting (prevents visual bugs)
-  if(!restart) text("Episode III\nREVENGE OF THE SITH",0,0);
+  if(!restart) text(title,0,0);
   textSize(width/20);
   var w = width*0.8;
   if(!restart) text(scroll, -w/2, width/4, w,height*20);
@@ -82,9 +83,16 @@ function draw() {
   }
 }
 
+function getTitle() {
+
+}
+
 function getScroll() {
   let scroll = new OpeningScroller();
-  return scroll.generateScroll();
+  return {
+    title: scroll.generateTitle(),
+    scroll: scroll.generateScroll()
+  };
 }
 
 function pauseScroll() {
@@ -94,7 +102,11 @@ function pauseScroll() {
 }
 
 // global clickers 
-$("#clicker").click(() => { scroll = getScroll(); restart = true; });
+$("#clicker").click(() => { 
+  scroll = getScroll().scroll; 
+  title = getScroll().title; 
+  restart = true; }
+);
 $("#pauser").click(pauseScroll);
 $("#restarter").click(() => { restart = true });
 
