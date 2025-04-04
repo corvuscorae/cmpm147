@@ -1,4 +1,6 @@
-// project.js - purpose and description here
+// project.js - Generates a Star Wars-like opening crawl using simple grammars and a template modeled after the A New Hope crawl
+//            - Also generates titles from an array of templates modeled after the nin Star Wars films' titles.
+//            - This project was originally remixed on Glitch from Adam Smith's bad-quests (https://glitch.com/~bad-quests).
 // Author: Your Name
 // Date:
 
@@ -61,8 +63,8 @@ class OpeningScrawler{
 
     // TITLE GENERATION
     this.#TITLES = [
-      `$adjective $noun`,             // ex: THE PHANTOM MENACE   // a(n) can be a problem later on
-      `$adjective $faction`,          // ex: THE LAST JEDI        // a(n) can be a problem later on
+      `$adjective $noun`,             // ex: THE PHANTOM MENACE   
+      `$adjective $faction`,          // ex: THE LAST JEDI        
       `$noun $verb`,                  // ex: THE FORCE AWAKENS
       `$action_noun OF THE $faction`, // ex: REVENGE OF THE SITH  
       `$faction $verb`,               // ex: THE EMPIRE STRIKES BACK
@@ -91,7 +93,7 @@ class OpeningScrawler{
   }
 
   #getRomanNumeral(){
-    let num = Math.floor(Math.random() * (this.#maxEpisode - this.#minEpisode + 1))
+    let num = Math.floor(Math.random() * (this.#maxEpisode - this.#minEpisode) + this.#minEpisode)
 
     // converting decimal to roman code is 'roman-numeral-convert.js' by @nickihastings on github
     // https://gist.github.com/nickihastings/df9d751a11bfb7b1e02a4d041e827d8d 
@@ -180,6 +182,7 @@ class OpeningScrawler{
     this.#TITLE_TEMPLATE = `${this.#TITLES[templateIndex]}`
 
     let title = this.#generate(this.#TITLE_TEMPLATE).toUpperCase();
+    
     if(this.#wordCount(title) < 3) { // prepend with "the" if too short
       title = `THE ${title}`; 
       chance = 11;    // makes it impossible for another "the" to be randomly added

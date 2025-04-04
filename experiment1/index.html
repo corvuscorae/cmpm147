@@ -2,7 +2,7 @@
 <html>
 <head>
 	<!-- This title is used for tabs and bookmarks -->
-	<title>Experiment 01: Getting Started</title>
+	<title>Experiment 01: Grammars-based Star Wars Crawler</title>
 
 	<!-- Use UTF character set, a good idea with any webpage -->
 	<meta charset="UTF-8" />
@@ -31,10 +31,11 @@
 	<!-- Style this page by changing the CSS in ../css/site.css or css/experiment.css -->
 	<main id="content" style = "color: #ff3030; border:none">
 		<section>
-
-			<h1>Experiment 01: Getting Started</h1>
+			<h1 style="font-family: Calibri; font-weight: 900;">Experiment 01: Grammars-based Star Wars Crawler</h1>
 			
+			<!-- GAME SECTION -->
 			<div class="minor-section" style = "background: #000">
+				<!-- controls -->
 				<button 
 					  style="font-family: Verdana; color: #fff; margin: 1em; background:  #494949"
 					  id="clicker" > 
@@ -50,37 +51,83 @@
 					  id="restarter" > 
 					  🔄 
 				</button>
+				<!-- intro text -->
 				<div style="font-family: Verdana ; color: #43A5CF; margin: 1em; background: #000;" > 
 					A long time ago in a galaxy far, far away... 
 				</div>
-				<!-- <div id="box"
-					style="font-family: Verdana; color: #FFE81F; padding: 1em; margin: 1em; background: #000;" >
-				</div> -->
+				<!-- game canvas -->
 				<div id="canvas-container">
 					<!-- canvas will be added here -->
-				</div>        
+				</div>      
+				<!-- full screen button -->  
 				<div class="fullscreen-box">
-					<button id="fullscreen" style="font-family: Verdana; margin: 1em;">Fullscreen</button>
+					<button id="fullscreen" style="font-family: Verdana; margin: 1em;">
+						Fullscreen
+					</button>
 				</div>    
 			</div>
 
-			<div class="minor-section" style="font-family: Verdana; color: #fff; margin: 1em; background:  #ff7070; border: none">
-				<h2>Description</h2>
-				<p>What are you trying to acomplish with this experiment?</p>
+			<!-- DESCRIPTION SECTION -->
+			<div class="minor-section" style="font-family: Calibri; color: #fff; margin: 1em; background:  #ff7070; border: none">
+				<h2 style="font-weight: 900">Description</h2>
+				<p>This is a Star Wars opening crawl generator, complete with <a href="https://knowyourmeme.com/memes/glup-shitto">Glup Shittos</a>, 
+					nostalgia farming, and random Dune references! The results are often silly, sometimes oddly compelling, and always Star Wars-y.
+					This experiment builds off of Adam Smith's Glitch game, <a href="https://glitch.com/~bad-quests">bad-quests</a>. 
+				</p>
 			</div>
 
-			<div class="minor-section"  style="font-family: Verdana; color: #fff; margin: 1em; background:  #ff7070; border: none">
-				<h2>Technical</h2>
-				<p>Describe in detail what you did technically and how it works?</p>
+			<!-- TECH SECTION -->
+			<div class="minor-section"  style="font-family: Calibri; color: #fff; margin: 1em; background:  #ff7070; border: none">
+				<h2 style="font-weight: 900">Technical</h2>
+				<p>For the text of the main body, this generator
+					uses a template based on <i>A New Hope</i>'s <a href="https://www.starwars.com/video/star-wars-episode-iv-a-new-hope-opening-crawl">opening crawl</a>,
+					and for the titles, it randomly chooses a template from an array of templates modeled after the nine films' titles.
+				</p>
+				<p>
+					The generator uses a <tt>replacer()</tt> function to randomly fill dynamic slots with words from a <tt>filler()</tt> bank. For static slots (words that will
+					be repeated later in the template, denoted by a pipe symbol in the template), the generator uses a <tt>setter()</tt> function, which works similarly to 
+					<tt>replacer()</tt> with an additional map check. If the static slot has not yet been defined, then the slot ID is added to the map, along with a random
+					index. Then, if the generator finds an already-defined but unfilled static slot, then it can refer to the slot ID in the map and fill that slot with the
+					same value. This was a necessary iteration to Smith's implementation for the generator to maintain things like faction names and Glup Shitto pronouns.
+				</p>
+				<p>
+					Title generation required some additional steps, as well. The title is initially generated using the same functions as the main body. Next, the generator 
+					checks that there are more than two words in the title. I added this check to align with all of the Star Wars film titles' word counts. Although it seems like
+					a minor attribute, I found that the two-word titles just didn't feel Star Wars-y -- so to fix this, the generator prepends short titles with "THE." There is also 
+					a coinflip check to prepend a "THE" if the generator has not already done so. 
+				</p>
+				<p>
+					In order to get the generated text to scroll, <tt>sketch.js</tt>'s <tt>draw()</tt> function uses several p5.js functions to tilt, translate, and raise the text, 
+					resulting in a crawl animation that is very similar to what you'll see at the beginning of a Star Wars movie. I found the code for this online -- see the original here:
+					<a href="https://editor.p5js.org/Codefish/sketches/fABwyG9Jz">Star Wars opening crawl</a> by CodeFish via p5js.org! 
+					
+				</p>
 			</div>
 
-			<div class="minor-section"  style="font-family: Verdana; color: #fff; margin: 1em; background:  #ff7070; border: none">
-				<h2>Reflection</h2>
-				<p>Each person that worked on the code should reflect on the process, the difficulties, and the successes of the experiment.</p>
+			<!-- REFLECTION SECTION -->
+			<div class="minor-section"  style="font-family: Calibri; color: #fff; margin: 1em; background:  #ff7070; border: none">
+				<h2 style="font-weight: 900">Reflection</h2>
+				<p>
+					This was my first time working with grammars, and for such a simple concept I found myself getting really excited about the potency of grammars-based
+					generation. I'm happy with the variety of outputs, and I think that, due to the OOP-ness of the genrator itself, it will be easy to expand the generator
+					to further increase the variety of outputs. I also always enjoy working with p5.js -- there always seems to be an in-house function for whatever I'm trying to
+					do, and the online community provides a lot of additional support. 
+				</p>
+				<p>
+					One thing that irks me about the generator is that it can sometimes feel a bit <i>too</i> random. I like the silliness (Star Wars is often 
+					<a href="https://www.youtube.com/watch?v=EsjwVu_ihKU">silly</a>), but I'd prefer it if things like the galaxy's <tt>starting state</tt> (i.e. civil war) 
+					and the <tt>end state</tt> (i.e. peace) felt more related. Right now, the Galaxy might start off in a "year of boredom" and the Glup Shitto is trying to 
+					"restore peace." The next iteration of this project will likely adress this with some kind of mapping, or by defining sub-keys to guide the output a bit
+					more precisely. In a similar vein, I'd like for some the static slots to be filled with synonyms (instead of repeating, for example, "plans" throughout, 
+					the generator might switch to "blueprints" or "schematics").
+				</p>
+				<p>
+					Lastly, I'd like to add a star field and some film grain to get this thing Star Wars-maxxed. 
+				</p>
 			</div>
-
 		</section>
-		<nav id="links" class="minor-section"  style="font-family: Verdana; color: #000000; margin: 1em; background:  #ffc7c7; border: none">
+
+		<nav id="links" class="minor-section"  style="font-family: Calibri; color: #000000; margin: 1em; background:  #ffc7c7; border: none">
 			<!-- Put link back to homepage here. -->
             <ul>
                 <li><a href="../index.html">Home</a></li>

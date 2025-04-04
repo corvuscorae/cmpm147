@@ -82,10 +82,6 @@ function draw() {
   }
 }
 
-function getTitle() {
-
-}
-
 function getScrawl() {
   let scrawl = new OpeningScrawler();
   return {
