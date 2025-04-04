@@ -84,7 +84,7 @@ function draw() {
 
 function getScroll() {
   let scroll = new OpeningScroller();
-  return scroll.generate();
+  return scroll.generateScroll();
 }
 
 function pauseScroll() {

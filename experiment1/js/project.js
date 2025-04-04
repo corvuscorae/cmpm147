@@ -44,7 +44,7 @@ class OpeningScroller{
 
     // template modeled after Star Wars: A New Hope opening crawl
     // https://starwars.fandom.com/wiki/Opening_crawl --> Film crawls --> Episode IV, A NEW HOPE
-    this.TEMPLATE = `
+    this.SCROLL_TEMPLATE = `
     It is $timeframe of $start_state. |good_guys $items, striking from $location, have $winstate their $numberth |campaign against the $bad_guys_descriptor |bad_guys. 
 
     During the |campaign, |good_guys $good_title managed to $good_title_actions $what_descriptor plans to the |bad_guys's $weapon_descriptor_1 weapon, the $weapon_name_A $weapon_name_B, $weapon_descriptor_2 $weapon_class with enough $weapon_threat to $weapon_action an entire $place. 
@@ -76,26 +76,26 @@ class OpeningScroller{
     }
   }
   
-  generate() {
-    let story = this.TEMPLATE;
+  generateScroll() {
+    let scroll = this.SCROLL_TEMPLATE;
     const slotPattern = /\$(\w+)/;
     const staticSlotPattern = /\|(\w+)/;  // static filler items
   
     this.STATIC_FILLS.clear();  // clear static fill indeces to prevent sticky fill on reroll
-    while (story.match(slotPattern)) {
-      story = story.replace(
+    while (scroll.match(slotPattern)) {
+      scroll = scroll.replace(
         slotPattern, 
         (match, name) => this.replacer(match, name)   // got this scoping fix from chat GPT (preverving 'this' when using replace())
       );
     }
-    while (story.match(staticSlotPattern)) {
-      story = story.replace(
+    while (scroll.match(staticSlotPattern)) {
+      scroll = scroll.replace(
         staticSlotPattern, 
         (match, name) => this.setter(match, name)
       );
     }
 
-    return story;
+    return scroll;
   }
 }
 
@@ -103,10 +103,10 @@ class OpeningScroller{
 // DEBUG 
 function main() {
   let scroll = new OpeningScroller();
-  let generate = scroll.generate();
+  let generateScroll = scroll.generateScroll();
 
   // global box 
-  //$(DIV_ID).text(generate);
+  //$(DIV_ID).text(generateScroll);
 }
 
 // let's get this party started - uncomment me
