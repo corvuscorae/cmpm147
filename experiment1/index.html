@@ -24,6 +24,8 @@
     <script type="text/javascript" src="../js/site.js" DEFER></script>
 	<!-- Use me for a JavaScript OOP Project -->
 	<script type="text/javascript" src="./js/project.js" DEFER></script>
+	<!-- Use me for a p5.js project -->
+	<script type="text/javascript" src="./js/sketch.js" DEFER></script>
 </head>
 <body style = "background: #ffa4a4">
 	<!-- Style this page by changing the CSS in ../css/site.css or css/experiment.css -->
@@ -31,24 +33,25 @@
 		<section>
 
 			<h1>Experiment 01: Getting Started</h1>
-
+			
 			<div class="minor-section" style = "background: #000">
-				<body>
-					<button 
+				<button 
 					  style="font-family: Verdana; color: #fff; margin: 1em; background:  #494949"
-					  id="clicker"
-					  > new star war </button>
-					<div
-					  style="font-family: Verdana ; color: #43A5CF; margin: 1em; background: #000;"
-						 > A long time ago in a galaxy far, far away... </div>
-					<div
-					  style="font-family: Verdana; color: #FFE81F; padding: 1em; margin: 1em; background: #000;"
-					  id="box"
-					></div>
-				  </body>
-                <div class="fullscreen-box">
-                    <button id="fullscreen" style="font-family: Verdana; margin: 1em;">Fullscreen</button>
-                </div>
+					  id="clicker" > 
+					  new star war 
+				</button>
+				<div style="font-family: Verdana ; color: #43A5CF; margin: 1em; background: #000;" > 
+					A long time ago in a galaxy far, far away... 
+				</div>
+				<!-- <div id="box"
+					style="font-family: Verdana; color: #FFE81F; padding: 1em; margin: 1em; background: #000;" >
+				</div> -->
+				<div id="canvas-container">
+					<!-- canvas will be added here -->
+				</div>        
+				<div class="fullscreen-box">
+					<button id="fullscreen" style="font-family: Verdana; margin: 1em;">Fullscreen</button>
+				</div>    
 			</div>
 
 			<div class="minor-section" style="font-family: Verdana; color: #fff; margin: 1em; background:  #ff7070; border: none">

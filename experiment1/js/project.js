@@ -2,6 +2,8 @@
 // Author: Your Name
 // Date:
 
+const DIV_ID = "#canvas-container"  // where to put text (see ../index.html)
+
 class OpeningScroller{
   constructor(){
     this.FILLERS = {
@@ -109,19 +111,21 @@ class OpeningScroller{
         (match, name) => this.setter(match, name)
       );
     }
-    /* global box */
-    $("#box").text(story);
+
+    return story;
   }
 }
 
 function main() {
   let scroll = new OpeningScroller();
   let generate = scroll.generate();
-}
 
+  // global box 
+  $(DIV_ID).text(generate);
+}
 
 // let's get this party started - uncomment me
 main();
 
-/* global clicker */
+// global clicker 
 $("#clicker").click(main);
