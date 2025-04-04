@@ -2,8 +2,6 @@
 // Author: Your Name
 // Date:
 
-const DIV_ID = "#canvas-container"  // where to put text (see ../index.html)
-
 class OpeningScroller{
   constructor(){
     this.FILLERS = {
@@ -44,29 +42,14 @@ class OpeningScroller{
 
     this.STATIC_FILLS = new Map();  // will hold indeces for static filler items
 
-    this.TEMPLATE = 
-    `
-    It is $timeframe of $start_state.
-    |good_guys $items, striking
-    from $location, have $winstate
-    their $numberth |campaign against
-    the $bad_guys_descriptor |bad_guys.
-    
-    During the |campaign, |good_guys
-    $good_title managed to $good_title_actions $what_descriptor
-    plans to the |bad_guys's
-    $weapon_descriptor_1 weapon, the $weapon_name_A
-    $weapon_name_B, $weapon_descriptor_2 $weapon_class
-    with enough $weapon_threat to
-    $weapon_action an entire $place.
-    
-    Pursued by the |bad_guys's
-    $bad_title_descriptor $bad_title, $glup
-    $shitto $goes $where $preposition |pronoun
-    $vehicle, custodian of the
-    plans that can $do_what
-    |pronoun $people and restore
-    $end_state to the galaxy....
+    // template modeled after Star Wars: A New Hope opening crawl
+    // https://starwars.fandom.com/wiki/Opening_crawl --> Film crawls --> Episode IV, A NEW HOPE
+    this.TEMPLATE = `
+    It is $timeframe of $start_state. |good_guys $items, striking from $location, have $winstate their $numberth |campaign against the $bad_guys_descriptor |bad_guys. 
+
+    During the |campaign, |good_guys $good_title managed to $good_title_actions $what_descriptor plans to the |bad_guys's $weapon_descriptor_1 weapon, the $weapon_name_A $weapon_name_B, $weapon_descriptor_2 $weapon_class with enough $weapon_threat to $weapon_action an entire $place. 
+
+    Pursued by the |bad_guys's $bad_title_descriptor $bad_title, $glup $shitto $goes $where $preposition |pronoun $vehicle, custodian of the plans that can $do_what |pronoun $people and restore $end_state to the galaxy....
     `;  
 
   }
@@ -116,12 +99,14 @@ class OpeningScroller{
   }
 }
 
+/*
+// DEBUG 
 function main() {
   let scroll = new OpeningScroller();
   let generate = scroll.generate();
 
   // global box 
-  $(DIV_ID).text(generate);
+  //$(DIV_ID).text(generate);
 }
 
 // let's get this party started - uncomment me
@@ -129,3 +114,4 @@ main();
 
 // global clicker 
 $("#clicker").click(main);
+*/
