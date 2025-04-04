@@ -2,11 +2,11 @@
 // Author: Your Name
 // Date:
 
-class OpeningScroller{
+class OpeningScrawler{
   #minEpisode = 10;
   #maxEpisode = 90;
   #TITLES; #TITLE_TEMPLATE; 
-  #FILLERS; #STATIC_FILLS; #SCROLL_TEMPLATE;
+  #FILLERS; #STATIC_FILLS; #SCRAWL_TEMPLATE;
 
   constructor(){
     this.#FILLERS = {
@@ -71,10 +71,10 @@ class OpeningScroller{
     
     this.#TITLE_TEMPLATE;
 
-    // SCROLL GENERATION    
+    // SCRAWL GENERATION    
     // template modeled after Star Wars: A New Hope opening crawl
     // https://starwars.fandom.com/wiki/Opening_crawl --> Film crawls --> Episode IV, A NEW HOPE
-    this.#SCROLL_TEMPLATE = `
+    this.#SCRAWL_TEMPLATE = `
     It is $timeframe of $start_state. |good_guys $items, striking from $location, have $winstate their $numberth |campaign against the $bad_guys_descriptor |bad_guys. 
 
     During the |campaign, |good_guys $good_title managed to $good_title_actions $what_descriptor plans to the |bad_guys's $weapon_descriptor_1 weapon, the $weapon_name_A $weapon_name_B, $weapon_descriptor_2 $weapon_class with enough $weapon_threat to $weapon_action an entire $place. 
@@ -170,8 +170,8 @@ class OpeningScroller{
   }
   
   /*** PUBLIC METHODS ***/
-  generateScroll() {
-    return this.#generate(this.#SCROLL_TEMPLATE);
+  generateScrawl() {
+    return this.#generate(this.#SCRAWL_TEMPLATE);
   }
 
   generateTitle() {
@@ -198,19 +198,3 @@ class OpeningScroller{
     return title;
   }
 }
-
-/*** DEBUG 
-function main() {
-  let scroll = new OpeningScroller();
-  let generateScroll = scroll.generateScroll();
-
-  // global box 
-  //$(DIV_ID).text(generateScroll);
-}
-
-// let's get this party started - uncomment me
-main();
-
-// global clicker 
-$("#clicker").click(main);
-***/
