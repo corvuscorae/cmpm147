@@ -2,7 +2,7 @@
 <html>
 <head>
 	<!-- This title is used for tabs and bookmarks -->
-	<title>Portfolio of My Name</title>
+	<title>Portfolio of Raven Cruz</title>
 
 	<!-- Use UTF character set, a good idea with any webpage -->
   <meta charset="UTF-8" />
@@ -15,18 +15,40 @@
 	<!-- Link to javascript file - DEFER waits until all elements are rendered -->
 	<script type="text/javascript" src="./js/experiment.js"></script>
 </head>
-<body>
+<body style="background-image: url('./img/bgStars.png');">
 	<!-- Style this page by changing the CSS in ../css/site.css or css/experiment.css -->
-	<main id="content">
-        <h1>Portfolio of My Name</h1>
+	<main id="content" style="color:rgb(145, 105, 255); background-color:rgba(68, 0, 255, 0.349)">
+        <h1>Portfolio of Raven Cruz</h1>
 		<section class="two-column">
 			<div class="minor-section">
 					<!-- Note that all filenames use lowercase and no spaces -->
                     <div class="image-wrapper">
-                        <img class="cat-photo" src="./img/cute-grey-kitten.jpg">
+						<img id="switchImage" src="./img/selfie.jpg" alt="click me" >
+
+					<script>
+						const image = document.getElementById("switchImage");
+						let images = [
+							"./img/selfie.jpg",
+							"./img/raven_A.png",
+							"./img/minecraftlul.png",
+							"./img/raven_B.png",
+							"./img/sagan.jpg",
+						]
+						let showingIndex = 0;
+
+						image.addEventListener("click", () => {
+							if(showingIndex < images.length - 1){ showingIndex++; } 
+							else { showingIndex = 0; }
+							image.src = images[showingIndex];
+						});
+
+					</script>
+					
                     </div>
 					<h2>About Me</h2>
-					<p>Tell us about yourself. Add photos. Customize this. Go crazy.</p>
+					<p>Howdy, I'm Raven. I'm an artist, a writer, and a game designer. I love PCG. 
+						I have a dog named Sagan and a wife named Ally. 
+						Talk to me about wave function collapse (the PCG algorithm, not the physics thing).</p>
 			</div>
             <div class="minor-section">
                 <h2>Links to Experiments</h2>
