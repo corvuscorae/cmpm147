@@ -51,7 +51,7 @@ class OpeningScrawler{
       preposition: ["aboard", "on", "in", "via", "with"],
       pronoun: ["her", "his", "their", "its", "xir"],
       vehicle: ["starship", "astrovan", "teleporter", "ship", "starfighter", "space station", "cruiser", "corvette", "space scooter", "speederbike", "speeder", "ship", "star barge", "void crawler", "transport", "nis-san", "2015 Kia Forte hatchback", "warpbike", "gravity shifter", "solar sailer", "lambda", "TIE fighter", "X-Wing", "A-Wing", "Interceptor", "flying saucer", "cruiser", "man-of-war", "clawcraft", "glider"],
-      do_what: ["save", "warn", "free", "hide", "rescue", "liberate", "defend", "preserve", "prepare", "conceal", "shield", "help", "bolster", "arm", "support", "weaponize", "radicalize", "mobilize", "stop", "destroy", "untether", "reunite with", "work with", "speak to", "release", "bail out", "emancipate", "unbind", "awaken", "educate"],
+      do_what: ["save", "warn", "free", "rescue", "liberate", "defend", "preserve", "prepare", "shield", "help", "bolster", "arm", "support", "weaponize", "radicalize", "mobilize", "stop", "destroy", "untether", "unify", "enlist", "release", "bail out", "emancipate", "unbind", "awaken", "educate", "ruin", "trick", "frighten", "motivate"],
       people: ["people", "gentry", "community", "family", "species", "homies", "friends", "family", "loved ones", "tribe", "clan", "kin", "folk", "horde", "posse", "society", "sisters", "brothers", "cousins", "parents", "pets", "worms", "guys", "husband", "wife", "spouse", "relatives", "children", "partner", "team", "army", "fan club", "droids"],
       
       // titles
