@@ -100,8 +100,12 @@ function pauseScrawl() {
 $("#clicker").click(() => { 
   scrawl = getScrawl().scrawl; 
   title = getScrawl().title; 
+  if(pause){ pauseScrawl(); }
   restart = true; }
 );
 $("#pauser").click(pauseScrawl);
-$("#restarter").click(() => { restart = true });
+$("#restarter").click(() => { 
+  if(pause){ pauseScrawl(); }
+  restart = true;
+});
 
