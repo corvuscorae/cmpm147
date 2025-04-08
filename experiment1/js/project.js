@@ -47,7 +47,7 @@ class OpeningScrawler{
       glup: ["***", "Princess Leia", "Glup", "George", "Geo'rge", "Luke", "Wo'man", "A'aa'aa aa", "Boingo", "Mitth'raw", "Paul", "Jonb", "Skleebis", "Keetu", "Meep o", "Oingo", "Shirt", "Peeblick", "Sneet Snart", "Guy", "Zaphod"],
       shitto: ["***", "Organa", "Shitto", "Atreides", "Boingo", "Pan'ts", "Skywalker", "the Butt", "the Glorb", "Snee'ble", "Lone", "Metaphor", "Christ", "Lucas", "the Guy", "the Sh'lirp", "the Mo'oden", "Beeblebrox", "Johnson"],
       goes: ["races", "hurries", "sneaks", "meanders", "rolls", "skitters", "rushes", "flies", "flees", "vamooses", "glides", "shoots", "speeds", "goes", "proceeds", "advances", "forges on", "pushes", "drives", "gets", "departs", "leaves", "peels off", "steps", "books it", "absconds", "hustles", "scrambles", "rushes", "meebles"],
-      where: ["", "***", "home", "to the base", "to headquarters", "to another galaxy"],
+      where: ["***", "home", "to the base", "to headquarters", "to another galaxy"],
       preposition: ["aboard", "on", "in", "via", "with"],
       pronoun: ["her", "his", "their", "its", "xir"],
       vehicle: ["starship", "astrovan", "teleporter", "ship", "starfighter", "space station", "cruiser", "corvette", "space scooter", "speederbike", "speeder", "ship", "star barge", "void crawler", "transport", "nis-san", "2015 Kia Forte hatchback", "warpbike", "gravity shifter", "solar sailer", "lambda", "TIE fighter", "X-Wing", "A-Wing", "Interceptor", "flying saucer", "cruiser", "man-of-war", "clawcraft", "glider"],
