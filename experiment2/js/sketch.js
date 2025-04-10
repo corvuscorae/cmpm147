@@ -2,30 +2,6 @@
 // Author: Your Name
 // Date:
 
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
-
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
-
-// Globals
-let myInstance;
-let canvasContainer;
-var centerHorz, centerVert;
-
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
-}
-
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
   centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
@@ -33,6 +9,19 @@ function resizeScreen() {
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
   // redrawCanvas(); // Redraw everything based on new size
 }
+
+// TODO: rename field stuff for readability
+// would be sososoo cool to have parallax in the 
+//  field noise thingy. idk how tho 
+// ALSO need to make this work with resizing
+/* exported setup, draw */
+let groundSeed = 0;
+let hillSeed = 0;
+let sky;
+
+let field;
+let fieldScroll;
+let speed = 1;  // not very tunable atm
 
 // setup() function is called once when the program starts
 function setup() {
@@ -42,8 +31,13 @@ function setup() {
   canvas.parent("canvas-container");
   // resize canvas is the page is resized
 
-  // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
+  sky = createGraphics(width, height);
+  field = createGraphics(width, height);
+  
+  fieldScroll = width;
+  perlinField(field);
+  
+  createButton("reimagine").mousePressed(() => regenerate());
 
   $(window).resize(function() {
     resizeScreen();
@@ -51,29 +45,99 @@ function setup() {
   resizeScreen();
 }
 
-// draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
+  sky.background("silver");
+  image(sky, 0, 0);
+  
+  // only update field when scroll factor is a whole num
+  if(fieldScroll % 1 === 0){ 
+    // shift field leftward one px
+    field.copy(field, 
+      1, 0, width - 1, height, 
+      0, 0, width - 1, height
+    );
+    
+    drawPerlinColumn(field, fieldScroll, width - 1);
+  }
+  
+  image(field, 0, 0);
+  
+  fieldScroll+=speed;
 
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
-
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+  perlinHills();
 }
 
-// mousePressed() function is called once after every time a mouse button is pressed
-function mousePressed() {
-    // code to run when mouse is pressed
+function perlinHills() {
+  let level = 75;
+  let scale = 0.01;
+  noiseSeed(hillSeed);
+
+  for (let x = 0; x < width; x++) {
+    let nx = scale * (x + frameCount*speed/3);
+    let c = level * noise(nx);
+    stroke("peru");
+    
+    line(x, height / 2, x, c + height / 4);
+  }
+  
+}
+
+// fill canvas with field values
+function perlinField(gfx) {
+  for (let x = 0; x < width; x++) {
+    drawPerlinColumn(gfx, x, x);
+  }
+}
+
+// draws one vertical column of perlin noise
+//   > noiseX = x-coordinate in perlin space (infinite)
+//   > screenX = x-coordinate on screen (where to drawn column)
+// based on https://p5js.org/reference/p5/noise/
+function drawPerlinColumn(gfx, noiseX, screenX) {
+  let level = 450;
+  let scale = 0.001;        // lower = larger scale
+  let squishFactor = 0.1;  // lower = higher perspective shift
+  noiseSeed(groundSeed);
+
+  for (let y = 0; y < height; y++) {
+    // modify scale along y-axis, squishing it as y gets larger
+    let mod = map(y, 0, height, 1, squishFactor);
+    let squish = scale / mod;
+
+    let nx = scale * noiseX;
+    let ny = squish * y;
+
+    let c = level * noise(nx, ny);
+    
+    let strokeColor;
+    if(c > 180) { 
+      if(c > 200){ strokeColor = "olivedrab" }
+      else { strokeColor = "olive"; } 
+    }
+    else { 
+      if(c < 150){ strokeColor = "#ccf5ff"; }
+      else { strokeColor = "#b3f0ff"; }
+    } 
+    gfx.stroke(strokeColor);
+    gfx.point(screenX, height/2 + height-y);
+    // draw stroke, starting from mid screen (horizon) 
+    // and "upside down" (height - y) so perspective effect compresses toward horizon
+  }
+}
+
+
+function regenerate() {
+  clear();
+  field.clear();
+  background("silver");
+  
+  fieldScroll = width;
+
+  // random seeds
+  groundSeed = random(0, 2556);
+  hillSeed = random(0, 2556);
+
+  // generate
+  perlinHills();
+  perlinField(field);
 }
