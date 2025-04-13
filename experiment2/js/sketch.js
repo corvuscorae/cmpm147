@@ -27,6 +27,8 @@ let hillSeed = 0;
 let skySeed = 0;
 
 let sky;
+let treeline = [];
+let treeSpacing = {min: 3, max: 30};
 
 let buffer;
 let field;
@@ -46,6 +48,12 @@ function setup() {
     hillsFar: color("#00947c"),
     hillsMid: color("#0bab67"),
     hillsNear: color("#6fbe43"),
+    trees: [color("#47981b"), color("#1a7300"), color("#2c8000")],
+  }
+
+  // init near treeline array
+  for (let x = 0; x < width*20; x += random(treeSpacing.min, treeSpacing.max)) {
+    treeline.push(new Tree(x, random(COLOR.trees)));
   }
 
   // place our canvas, making it fit our container
@@ -76,6 +84,19 @@ function draw() {
   perlinHills(100, 0.007, 5, hillSeed-2, h/3.5, COLOR.hillsMid, false);
   perlinHills(100, 0.007, 2.5, hillSeed-1, h/3, COLOR.hillsNear, false);
   perlinHills(100, 0.007, 2.5, hillSeed-1, h/3, COLOR.hillsNear, true);
+
+  for(let tree of treeline){ tree.show(); }
+
+  // recycle off-screen trees
+  for (let i = treeline.length - 1; i >= 0; i--) {
+    if (treeline[i].x < -50) {
+      treeline.splice(i, 1);   // bye tree
+      treeline.push(new Tree(  // new tree
+        w + random(treeSpacing.min, treeSpacing.max), 
+        random(COLOR.trees))
+      );
+    }
+  }
 
   // only update field when scroll factor is a whole num
   if(fieldScroll % 1 === 0){ 
@@ -238,4 +259,47 @@ function regenerate() {
   // generate
   perlinField(field);
   perlinSky(sky);
+}
+
+// TREE CLASS
+class Tree {
+  constructor(x, color) {
+    this.x = x;
+    this.color = color;
+
+    this.baseWidth = random(8, 15);
+    this.height = random(10, 20);
+    this.tiers = floor(random(2,floor(this.height/5)));
+  }
+
+  show() {
+    this.x -= speed/2;    // move tree along x axis
+    let ground = h/2;
+    
+    let tw = this.baseWidth;
+    let th = this.height;
+
+    // draw trees
+    this.color.setAlpha(255); 
+    fill(this.color);
+    for(let i = 1; i <= this.tiers; i++){
+      let mult = (i === 1) ? 0 : 1; // so we can draw our ground level part of the tree (no floaters)
+      triangle(
+        this.x, ground-th,                                            // mid
+        this.x - tw/2, ground - mult * this.height/(this.tiers*i),    // left
+        this.x + tw/2, ground - mult * this.height/(this.tiers*i)     // right
+      );
+    }
+
+    // add reflections
+    th *= 0.5;   // squish em
+    this.color.setAlpha(100);
+    fill(this.color);
+    triangle(
+      this.x, ground+th,
+      this.x - tw/2, ground,
+      this.x + tw/2, ground
+    );
+
+  }
 }
