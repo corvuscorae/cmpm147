@@ -178,19 +178,18 @@ function draw() {
   perlinHills(H/3,    COLOR.hillsNear,  hills.near);        // draw closest hills
   perlinHills(H/3,    COLOR.hillsNear,  hills.near, 0.2);   // draw closest hills' reflection
 
-  // update trees
-  for(let tree of treeline){ tree.update(); }
-
   // recycle off-screen trees
   for (let i = treeline.length - 1; i >= 0; i--) {
-    if (treeline[i].x < -50) {
-      treeline.splice(i, 1);   // bye tree
-      treeline.push(new Tree(  // new tree
-        W + random(treeSpacing.min, treeSpacing.max), 
-        random(COLOR.trees))
-      );
+    if (treeline[i].x < -treeline[i].baseWidth) { // as soon as tree is offscreen, yeet it
+      let tree = treeline.splice(i, 1)[0];                    // yeet
+      tree.x = W + random(treeSpacing.min, treeSpacing.max);  // regen
+      tree.color = random(COLOR.trees);                       // set new color
+      treeline.push(tree);                                    // add it to treeline
     }
   }
+
+  // update trees
+  for(let tree of treeline){ tree.update(); }
 
   // only update ground when scroll factor is a whole num
   if(groundScroll % 1 === 0){ 
@@ -231,7 +230,7 @@ function draw() {
 function init(){
   // init treeline
   treeline = [];
-  for (let x = 0; x < width*20; x += random(treeSpacing.min, treeSpacing.max)) {
+  for (let x = 0; x < width; x += random(treeSpacing.min, treeSpacing.max)) {
     treeline.push(new Tree(x, random(COLOR.trees)));
   }
   
