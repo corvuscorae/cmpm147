@@ -43,8 +43,13 @@ function setup() {
     grass: color("#6a994e"),
     wet_grass: color("#7e7846"),
     water: color("#c7f8ff"),
-    sky: color("#00c2ff"),
-    clouds: color("#f6edd9"),
+    sky: {
+      clear: color("#00c2ff"),
+      clearcloud: color("#4fcefa"),
+      mid: color("#65d7f1"),
+      cloudclear: color("#fbf6ec"),
+      cloud: color("#f6edd9"),
+    },
     hillsFar: color("#00947c"),
     hillsMid: color("#0bab67"),
     hillsNear: color("#6fbe43"),
@@ -152,10 +157,14 @@ function perlinSky(gfx) {
       let nx = scale * x;
       let ny = squish * y;
     
-      let c = level * noise(nx, ny);      
+      let c = level * noise(nx, ny);   
+         
+      let strokeColor = COLOR.sky.clear;
+      if(c < 185){ strokeColor = COLOR.sky.clearcloud; }
+      else if(c < 205){ strokeColor = COLOR.sky.mid; }
+      else if(c < 210){ strokeColor = COLOR.sky.cloudclear; }
+      else{ strokeColor = COLOR.sky.cloud; }
 
-      let strokeColor = COLOR.clouds;
-      if(c < 200){ strokeColor = COLOR.sky; }
       gfx.stroke(strokeColor);
       // reflect at h/2 (midpoint, aka horizon)
       gfx.point(x, h - y);  // bottom half
