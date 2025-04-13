@@ -24,6 +24,7 @@ let hillSeed = 0;
 let skySeed = 0;
 let sky;
 
+let buffer;
 let field;
 let fieldScroll = w;
 let speed = 0.5;  // not very tunable atm
@@ -37,6 +38,7 @@ function setup() {
 
   sky = createGraphics(w, h);
   field = createGraphics(w, h);
+  buffer = createGraphics(w, h);
   
   perlinField(field);
   perlinSky(sky);
@@ -57,16 +59,33 @@ function draw() {
   // only update field when scroll factor is a whole num
   if(fieldScroll % 1 === 0){ 
     // shift field leftward one px
-    field.copy(field, 
-      1, 0, w - 1, h, 
-      0, 0, w - 1, h
+
+    // copy current field into a buffer, leaving out the leftmost column
+    buffer.copy(field, 
+      1, 0, w, h, 
+      0, 0, w, h
     );
     
-    image(field, 0, 0);
+    // clear field (this will preserve transparency on update)
+    field.clear();
+
+    // refill field with buffer
+    field.copy(buffer, 
+      0, 0, w, h, 
+      0, 0, w, h
+    );
+
+    // clear buffer (again, to preserve transparency)
+    buffer.clear();
+
+    // note: there may be a better way to handle this, but i like the outcome
+    // as it is. i found that i need the buffer object so that i can clear 
+    // field on update without losing the data and having an empty wetland
     
     drawPerlinColumn(field, fieldScroll, w - 1);
   }
-  
+
+  image(field, 0, 0);
   fieldScroll+=speed;
 
   perlinHills();
@@ -153,30 +172,16 @@ function drawPerlinColumn(gfx, noiseX, screenX) {
     if (c > 180) { // VEGETATION
       if(c > 200){ strokeColor = "olivedrab" }
       else { strokeColor = "olive"; } 
-      
-      gfx.stroke(strokeColor);
-      gfx.point(screenX, h/2 + h-y);
     } 
     
     else {       // AGUA
-      // TODO: debug. left off here
-      //if (c < 150) { strokeColor = "white"; } 
-      //else strokeColor = "skyblue"; 
-      // TODO: LEFT OFF HERE OH GOD SO CLOSE
-      // the problem is that screenX is always w - 1 when scrolling, hence the horizontal lines
-      // need to find a way to place the sky values at like. their actual x's? 
-      // so screenX is [0-w]
-      // noise X starts at [0-w], then increminets by one each frame
-      // i just want the values places here to be the original [1-w]. how can i derive those from noiseX and screenX
-      //c = evalPerlinSkyPoint(screenX, h/2 + h-y, w);
-      //placePerlinSkyPoint(gfx, c, screenX, h/2 + h-y);
-      
-      gfx.stroke("skyblue");
-      gfx.point(screenX, h/2 + h-y);
+      continue;//strokeColor = "skyblue" // TODO: reflect sky here instead
     }
-    
+
     // draw stroke, starting from mid screen (horizon) 
     // and "upside down" (h - y) so perspective effect compresses toward horizon
+    gfx.stroke(strokeColor);
+    gfx.point(screenX, h/2 + h-y);
   }
 }
 
@@ -184,6 +189,7 @@ function drawPerlinColumn(gfx, noiseX, screenX) {
 function regenerate() {
   clear();
   field.clear();
+  buffer.clear();
   sky.clear();
   
   fieldScroll = w;
