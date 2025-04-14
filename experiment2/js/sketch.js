@@ -145,7 +145,7 @@ function setup() {
     },
     sky: {
       clear: color("#00c2ff"),
-      clearcloud: color("#4fcefa"),
+      clearish: color("#4fcefa"),
       mid: color("#65d7f1"),
       cloudclear: color("#fbf6ec"),
       cloud: color("#f6edd9"),
@@ -263,7 +263,7 @@ function perlinHills(elevation, color, ns, squishReflect){
   for (let x = 0; x <= W; x++) {
     // shift hills at rate of speed/parallax; more parallax = slower shift
     let nx = ns.scale * (x + frameCount * SPEED/ns.parallax); 
-    let y = ns.level * noise(nx) + elevation;
+    let y = ns.level * noise(nx) + elevation + 0;
 
     if (squishReflect) {
       // adjust y to be upside down and squished, for reflections
@@ -307,11 +307,32 @@ function drawPerlinColumn(gfx, noiseX, screenX, maxY, ns)
 
 // color picker for sky generation
 function pickSkyColor(c){
-  let strokeColor = COLOR.sky.clear;
-  if(c < 185){ strokeColor = COLOR.sky.clearcloud; }
-  else if(c < 205){ strokeColor = COLOR.sky.mid; }
-  else if(c < 210){ strokeColor = COLOR.sky.cloudclear; }
-  else{ strokeColor = COLOR.sky.cloud; }
+  let strokeColor;
+
+  // clouds
+  if(c > 260){ strokeColor = COLOR.sky.cloud; }
+
+  else if(c > 245){ strokeColor = COLOR.sky.cloudclear; }
+  else if(c > 240 && c < 245){ strokeColor = COLOR.sky.cloud; }
+  
+  else if(c > 230){ strokeColor = COLOR.sky.cloud; }
+  else if(c > 225 && c < 230){ strokeColor = random([COLOR.sky.cloudclear, COLOR.sky.cloud]); }
+  
+  else if(c > 215){ strokeColor = COLOR.sky.cloudclear; }
+  else if(c > 210 && c < 215){ strokeColor = COLOR.sky.cloud; }
+
+  else if(c > 200){ strokeColor = random([COLOR.sky.cloudclear, COLOR.sky.cloud]); }
+  else if(c > 195 && c < 200){ strokeColor = COLOR.sky.cloud; }
+
+  else if(c > 185){ strokeColor = COLOR.sky.cloudclear; }
+  else if(c > 180 && c < 185){ strokeColor = COLOR.sky.cloud; }
+
+  else if(c > 170){ strokeColor = COLOR.sky.cloudclear; }
+
+  // sky
+  else if(c > 160){ strokeColor = COLOR.sky.mid; }
+  else if(c > 155){ strokeColor = COLOR.sky.clearish; }
+  else{ strokeColor = COLOR.sky.clear; }
 
   return strokeColor;
 }
