@@ -2,13 +2,10 @@
 // Author: Raven Cruz
 // Date: 4-13-2025
 
-function resizeScreen() {
-  centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
-  centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
-  console.log("Resizing...");
-  resizeCanvas(canvasContainer.width(), canvasContainer.height());
-  //redrawCanvas(); // Redraw everything based on new size
-}
+// canvas globals
+canvasContainer = $("#canvas-container");
+let W = canvasContainer.width();
+let H = canvasContainer.height();
 
 //* CLASSES *//
 // NOISE CLASS
@@ -79,9 +76,6 @@ class Tree {
 
 /* exported setup, draw */
 // globals
-canvasContainer = $("#canvas-container");
-let W = canvasContainer.width();
-let H = canvasContainer.height();
 let COLOR; // defined in setup()
 let SPEED = 0.5;
 
@@ -169,15 +163,14 @@ function setup() {
   
   $("#reimagine").click(() => regenerate());
 
-  /*
   // TODO: fix resizing. currently incompatible with scrolling effect
   // resize canvas if the page is resized
   $(window).resize(function() { resizeScreen(); });
   resizeScreen();
-  */
 }
 
 function draw() {  
+  //if(frameCount % 10 === 1){ console.log(W, H); }
   // put sky as background
   image(skyGFX, 0, 0);  
 
@@ -234,20 +227,6 @@ function draw() {
 
   // update ground scroll amt (helps us track perlin values for ground generation)
   groundScroll+=SPEED;
-}
-
-function init(){
-  // init treeline
-  treeline = [];
-  for (let x = 0; x < width; x += random(treeSpacing.min, treeSpacing.max)) {
-    treeline.push(new Tree(x, random(COLOR.trees)));
-  }
-  
-  // init ground, fill canvas w perlin columns
-  for (let x = 0; x < width; x++) {
-    drawPerlinColumn(groundGFX, x, x, H, ground);
-    drawPerlinColumn(skyGFX, x, x, H/2, sky);
-  }
 }
 
 // 1D perlin function to generate hills
@@ -405,6 +384,20 @@ function pickGroundColor(c){
   return strokeColor;
 }
 
+function init(startX = 0){
+  console.log("init...")
+  // init treeline
+  for (let x = startX; x < W; x += random(treeSpacing.min, treeSpacing.max)) {
+    treeline.push(new Tree(x, random(COLOR.trees)));
+  }
+  
+  // init ground, fill canvas w perlin columns
+  for (let x = 0; x < W; x++) {
+    drawPerlinColumn(groundGFX, x, x, H, ground);
+    drawPerlinColumn(skyGFX, x, x, H/2, sky);
+  }
+}
+
 // re-roll new noise vals and re-init generators
 function regenerate() {
   noLoop();   // pause draw() on regen
@@ -425,6 +418,44 @@ function regenerate() {
     hills[hill].seed = random(0, 2556);
   }
 
+  // rest treeline
+  treeline = [];
+
   init();
   loop();   // restart draw()
+}
+
+// RESIZE
+// TODO: fix bugs
+//        - slow reload
+function resizeScreen() {
+  centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
+  centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
+  console.log("Resizing...");
+
+  let oldW = W;
+  H = canvasContainer.height();
+
+  if(canvasContainer.width() > W){
+    W = canvasContainer.width();
+
+    // remove and re-init graphics
+    skyGFX.remove();
+    skyGFX = createGraphics(W, H);
+
+    groundGFX.remove();
+    groundGFX = createGraphics(W, H);
+
+    bufferGFX.remove();
+    bufferGFX = createGraphics(W, H);
+
+    groundScroll = W;
+
+    init(oldW);
+
+    image(skyGFX, 0, 0);
+  }
+
+  resizeCanvas(canvasContainer.width(), canvasContainer.height());
+  //redrawCanvas(); // Redraw everything based on new size
 }

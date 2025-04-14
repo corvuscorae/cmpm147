@@ -11,9 +11,16 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color:#ffd67d;
+    color:#ffae00;
 }
 
 #canvas-container {
     width: 100%;
     height: 600px;
+    background-color:rgb(120, 151, 71);
+}
+
+#minor-section{
+    background-color:coral;
 }
