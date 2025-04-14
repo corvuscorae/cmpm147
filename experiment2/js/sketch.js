@@ -86,15 +86,15 @@ let treeSpacing = {min: 3, max: 30};
 // hill generation stuff
 let hillSeed = 0;
 let hills = { // noise settings for hill generation @ different distances
-  far:  new NoiseSettings(0, 100, 0.009, { parallax: 10 }),
-  mid:  new NoiseSettings(1, 100, 0.007, { parallax: 5 }),
-  near: new NoiseSettings(2, 90,  0.007, { parallax: 2.5 }),
+  far:  new NoiseSettings(Math.floor(Math.random() * 2556), 100, 0.009, { parallax: 10 }),
+  mid:  new NoiseSettings(Math.floor(Math.random() * 2556), 100, 0.007, { parallax: 5 }),
+  near: new NoiseSettings(Math.floor(Math.random() * 2556), 90,  0.007, { parallax: 2.5 }),
 }
 
 // sky generation stuff
 let skyGFX;
 let sky = new NoiseSettings( 
-  0, 400, 0.009, {squish: 0.1},
+  Math.floor(Math.random() * 2556), 400, 0.009, {squish: 0.1},
   (gfx, c, x, y, maxY) => {
     let strokeColor = pickSkyColor(c);
     gfx.stroke(strokeColor);
@@ -110,7 +110,7 @@ let bufferGFX;
 let groundGFX;
 let groundScroll = W;
 let ground = new NoiseSettings( 
-  0, 500, 0.001, {squish: 0.15},
+  Math.floor(Math.random() * 2556), 500, 0.001, {squish: 0.15},
   (gfx, c, x, y, maxY) => {
     let strokeColor = pickGroundColor(c);
     gfx.stroke(strokeColor);
