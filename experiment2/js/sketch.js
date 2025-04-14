@@ -129,11 +129,20 @@ let ground = new NoiseSettings(
 
 // setup() function is called once when the program starts
 function setup() {
+  colorMode(RGB);
   // pallete generated here: https://mycolor.space/?hex=%236A994E&sub=1 
   COLOR = {
-    grass: color("#6a994e"),
-    wet_grass: color("#7e7846"),
-    water: color("#c7f8ff"),
+    ground:{
+      green_grass: color("#4c7b32"),
+      greener_grass: color("#5f8f46"),
+      greenest_grass: color("#74a458"),
+      dry_grass: color("#afa871"),
+      muddy_grass: color("#97905c"),
+      mud: color("#7e7846"),
+      dark_water: color("#47caca"),
+      water: color("#65e5e5"),
+      light_water: color("#83ffff"),
+    },
     sky: {
       clear: color("#00c2ff"),
       clearcloud: color("#4fcefa"),
@@ -312,14 +321,63 @@ function pickGroundColor(c){
   let strokeColor;
   let strokeAlpha = 255;
   if (c > 180) { // VEGETATION
-    if(c > 200){ strokeColor = COLOR.grass; }
-    else { strokeColor = COLOR.wet_grass; } 
+    //if(c > random([220, 230, 240, 250])){ strokeColor = COLOR.ground.bushes; }
+    if(c > 250){ strokeColor = COLOR.ground.greener_grass; }
+    else if(c > 220){ strokeColor = COLOR.ground.greenest_grass; }
+    else if(c > 210){ strokeColor = COLOR.ground.greener_grass; }
+    else if(c > 200){ strokeColor = COLOR.ground.green_grass; }
+    else if(c > 190){ strokeColor = COLOR.ground.muddy_grass; }
+    else { strokeColor = COLOR.ground.mud; } 
+
+    // detailing
+    // grassy area
+    // texture in center of large-c patches
+    let range = {
+      min: random(300,350),
+      max: random(300,350),
+    }
+    if(c > range.min && c < range.max){ strokeColor = random([COLOR.ground.greenest_grass, COLOR.ground.green_grass]); }
+    if(c > 300 && c < 302){ strokeColor = COLOR.ground.green_grass; }     // borders
+    if(c > 350 && c < 352){ strokeColor = COLOR.ground.greenest_grass; }
+
+    // borders
+    if(c > 250 && c < 252){ strokeColor = COLOR.ground.green_grass; }
+    if(c > 220 && c < 222){ strokeColor = COLOR.ground.green_grass; }
+
+    // texture in mid-c patches
+    range = {
+      min: random(210,220),
+      max: random(210,220),
+    }
+    if(c > range.min && c < range.max){ strokeColor = random([COLOR.ground.greenest_grass, COLOR.ground.greener_grass]); }
+    if(c > 210 && c < 212){ strokeColor = COLOR.ground.greenest_grass; }    // borders
+    if(c > 200 && c < 202){ strokeColor = COLOR.ground.greener_grass; }
+
+    // muddy area
+    // texture between mud and grass
+    range = {
+      min: random(190,200),
+      max: random(190,200),
+    }
+    if(c > range.min && c < range.max){ strokeColor = COLOR.ground.dry_grass; }
+    if(c > 190 && c < 192){ strokeColor = COLOR.ground.dry_grass; }
+    if(c > 180 && c < 182){ strokeColor = COLOR.ground.dry_grass; }
+    
   } 
   
-  else {       // AGUA
-    strokeColor = COLOR.water;
-    strokeAlpha = 30;   // low opacity for sky reflection!
-    //continue;
+  else { // AGUA
+    if(c > 170){ 
+      strokeColor = COLOR.ground.dark_water; 
+      strokeAlpha = 75;   // low opacity for sky reflection!
+    }
+    else if(c > 160){ 
+      strokeColor = COLOR.ground.water; 
+      strokeAlpha = 50;   // low opacity for sky reflection!
+    }
+    else{ 
+      strokeColor = COLOR.ground.light_water; 
+      strokeAlpha = 25;   // low opacity for sky reflection!
+    }
   }
   
   strokeColor.setAlpha(strokeAlpha);   // low opacity for sky reflection!
