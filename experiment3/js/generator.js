@@ -38,7 +38,7 @@ function drawGrid(grid, bitmask) {
       for(let j = 0; j < grid[i].length; j++) {
         //if (grid[i][j] == "_") {
         // get feature (i.e. walls, ground, etc.) represented by current ASCII key
-        let feature = ascii[grid[i][j]];
+        let feature = world[WORLD_TYPE].ascii[grid[i][j]];
         if(!feature) feature = "empty";     // if random char is input, default to empty
         let trans = `${bitVals[i][j]}`;
         let tile = { }

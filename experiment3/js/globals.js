@@ -4,14 +4,6 @@ let numRows, numCols;
 
 let WORLD_TYPE = "dungeon";
 
-// TILES
-const ascii = {
-  "~": "ground",
-  "#": "wall",
-  "+": "corridor",
-  ".": "empty",
-}
-
 // TILE IDS
 const world = {
   dungeon: {
