@@ -6,7 +6,9 @@ function generateGrid(numCols, numRows) {
     if(WORLD_TYPE === "dungeon"){
         grid = new BSP(numCols, numRows).get();
     }
-    if(WORLD_TYPE === "overworld") console.log("meep")
+    if(WORLD_TYPE === "overworld"){
+        grid = new BSP(numCols, numRows).get();
+    }
     return grid;
 }
 

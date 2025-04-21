@@ -96,11 +96,22 @@ function stringToGrid(str) {
   return grid;
 }
 
+function switchWorldType(){
+  let old_type = WORLD_TYPE;
+  
+  if(WORLD_TYPE === "dungeon"){ WORLD_TYPE = "overworld"; }
+  else { WORLD_TYPE = "dungeon"; }
+
+  select("#worldSwitch").html(old_type);
+}
+
 function setup() {
   numCols = select("#asciiBox").attribute("rows") | 0;
   numRows = select("#asciiBox").attribute("cols") | 0;
 
   tileCanvas = createCanvas(TILE_SIZE * numCols, TILE_SIZE * numRows).parent("canvas-container");
+
+  select("#worldSwitch").mousePressed(switchWorldType);
 
   select("canvas").elt.getContext("2d").imageSmoothingEnabled = false;
   select("#reseedButton").mousePressed(reseed);
