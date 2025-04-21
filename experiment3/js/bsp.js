@@ -104,10 +104,10 @@ function placeRooms(leaves){
         // put walls around rooms
         let wall = getKeyByValue(ASCII_map, "wall");
         let leftWall = roomX - 1;
-        if(leftWall >= 0){ carveSpace(leftWall, roomY-1, 1, roomH+2, wall); }
+        if(leftWall >= 0){ carveSpace(leftWall, roomY, 1, roomH, wall); }
 
         let rightWall = roomX + roomW;
-        if(rightWall < grid_gbl[0].length){ carveSpace(rightWall, roomY-1, 1, roomH+2, wall); }
+        if(rightWall < grid_gbl[0].length){ carveSpace(rightWall, roomY, 1, roomH, wall); }
         
         let topWall = roomY - 1;
         if(topWall >= 0){ carveSpace(roomX, topWall, roomW, 1, wall); }

@@ -73,31 +73,10 @@ const world = {
       cols: [21],
       rows: [21],
       transition: {
-          topleft:    {i: 9,  j: 4},
-          top:        {i: 9,  j: 5},
-          topright:   {i: 9,  j: 6},
-          left:       {i: 10, j: 4},
-          right:      {i: 10, j: 6},
-          btmleft:    {i: 11, j: 4},
-          btm:        {i: 11, j: 5},
-          btmright:   {i: 11, j: 6},
-          // testing vals
-          "0":    {i: 0,  j: 19},
-          "1":    {i: 0,  j: 0},      // lt green
-          "2":    {i: 0,  j: 1},      // dark green
-          "3":    {i: 0,  j: 3},      // brown
-          "4":    {i: 20,  j: 0},     // snowy tree   ////
-          "5":    {i: 20,  j: 12},    // ice
-          "6":    {i: 5, j: 11},  //top{i: 0,  j: 12},     // white
-          "7":    {i: 5, j: 9},   //bttm{i: 0,  j: 13},     // light blue
-          "8":    {i: 0,  j: 14},     // dark blue    ////
-          "9":    {i: 6, j: 10},//left{i: 0,  j: 15},     // grey
-          "10":   {i: 0,  j: 18},     // yellow
-          "11":   {i: 0,  j: 28},     // chest
-          "12":   {i: 14, j: 0},      // green tree
-          "13":   {i: 14, j: 3},      // orange tree
-          "14":   {i: 14, j: 6},      // dark green tree
-          "15":   {i: 14, j: 9},      // brown tree
+          "1":    {i: 5,  j: 9},  // BTTM     
+          "2":    {i: 4,  j: 10}, // RIGHT   
+          "4":    {i: 6,  j: 10}, // LEFT     
+          "8":    {i: 5,  j: 11},  // TOP       
       }
   },
   corridor: {
@@ -105,13 +84,12 @@ const world = {
       rows: [9]
   },
   empty: {
-      cols: [0, 1, 2, 3],
-      rows: [10]
+      cols: [21, 22, 23, 24],
+      rows: [21, 22, 23, 24]
   }
   }
 }
 let worldType = "dungeon";
-let bitVals;
 
 function preload() {
   tilesetImage = loadImage('./assets/tileset.png');
@@ -169,6 +147,10 @@ function setup() {
   $(window).resize(function() {
     resizeScreen();
     regenerateGrid();
+
+    bgLayer = createGraphics(width, height);
+    bgLayer.noSmooth(); // Keep that pixel aesthetic
+    backgroundVoid();
   });
   
   resizeScreen();

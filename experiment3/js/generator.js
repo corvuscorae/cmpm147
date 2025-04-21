@@ -1,5 +1,6 @@
 /* exported generateGrid, drawGrid */
 /* global placeTile */
+let bitVals;
 
 function generateGrid(numCols, numRows, type) {
     let grid = [];  // empty
@@ -16,11 +17,12 @@ function generateGrid(numCols, numRows, type) {
     }
     BSP(grid, numCols, numRows, BSP_settings);
 
-    console.log(grid)
     const wall = getKeyByValue(ASCII_map, "wall");
+    const ground = getKeyByValue(ASCII_map, "ground");
 
-    bitVals = bitmaskValues(grid, wall);
+    bitVals = bitmaskValues(grid, wall, ground);
     
+    /*
     let print = "";
     for(let i = 0; i < bitVals.length; i++){
         for(let j = 0; j < bitVals[i].length; j++){
@@ -31,14 +33,6 @@ function generateGrid(numCols, numRows, type) {
         print += `\n`;
     }
     console.log(print)
-
-    /*
-    for(let i = 0; i < bitVals.length; i++){
-        for(let j = 0; j < bitVals[i].length; j++){
-            let trans = getTransTile(bitVals[i][j]);
-            let tile = world[type].wall.transition[trans];  // gets transition tile for walls
-        }
-    }
     */
 
     return grid;
@@ -71,7 +65,7 @@ function drawGrid(grid) {
         //if (grid[i][j] == "_") {
         // get feature (i.e. walls, ground, etc.) represented by current ASCII key
         let feature = ASCII_map[grid[i][j]];
-        let trans = false; // getTransTile(bitVals[i][j]);
+        let trans = getTransTile(bitVals[i][j]);
         let tile = { }
         if(!trans){
             tile = {
@@ -102,7 +96,7 @@ function getKeyByValue(object, value) {
 }
 
 //*** AUTOTILING ***//
-function bitmaskValues(grid, target){
+function bitmaskValues(grid, mask, target){
     let result = [];
     // bits associates with directions for bitmap
     let N = 0b0001; // north
@@ -111,27 +105,29 @@ function bitmaskValues(grid, target){
     let S = 0b1000; // south
 
     const empty = getKeyByValue(ASCII_map, "empty");
-    for(let i = 0; i < grid.length; i++){
+    for(let i = 0; i < numRows; i++){
         result[i] = [];
-        for(let j = 0; j < grid[i].length; j++){
+        for(let j = 0; j < numCols; j++){
             let bit = 0b0000;
-            let pVal = grid[i][j];
-
-            if(pVal === target){
-                if(i > 0 && grid[i-1][j] !== empty){ // if current tile has a NORTH neighbor...
+            let val = grid[i][j];
+            if(val === mask){
+                if(i > 0 && grid[i-1][j] === target){ // if current tile has a NORTH neighbor...
                     // ...add it to current tile's bitmap value
                     bit += N;      
-                    // ...and update north neighbor's bitmap value to reflect SOUTH neighbor (aka current tile)
-                    result[i-1][j] += S;
                 }
-                if(j > 0 && grid[i][j-1] !== empty){ // if current tile has a WEST neighbor...
+                if(j > 0 && grid[i][j-1] === target){ // if current tile has a WEST neighbor...
                     // ...add it to current tile's bitmap value
                     bit += W;  
-                    // ...and update north neighbor's bitmap value to reflect SOUTH neighbor (aka current tile)
-                    result[i][j-1] += E;
                 }  
-            }          
-            
+                if(i < numRows-1 && grid[i+1][j] === target){ // if current tile has a NORTH neighbor...
+                    // ...add it to current tile's bitmap value
+                    bit += S;      
+                }
+                if(j < numCols-1 && grid[i][j+1] === target){ // if current tile has a WEST neighbor...
+                    // ...add it to current tile's bitmap value
+                    bit += E;  
+                }  
+            } 
             result[i][j] = bit;
         }
     }
