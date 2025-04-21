@@ -25,6 +25,8 @@
 	<!-- Use me for a JavaScript OOP Project -->
 	<script type="text/javascript" src="./js/project.js" DEFER></script>
 	<!-- Use me for a p5.js project -->
+	<script type="text/javascript" src="./js/bsp.js" DEFER></script>
+	<script type="text/javascript" src="./js/generator.js" DEFER></script>
 	<script type="text/javascript" src="./js/sketch.js" DEFER></script>
 </head>
 <body>
@@ -35,12 +37,17 @@
 			<h1>Experiment X - Subject/Topic</h1>
 
 			<div class="minor-section">
+				<button id="reseedButton"> reseed</button>
+				<span id="seedReport"></span>
 				<div id="canvas-container">
 					<!-- canvas will be added here -->
 				</div>
-                <div class="fullscreen-box">
+				<hr />
+				<!-- text box -->
+				<textarea cols="40" rows="40" id="asciiBox" style="opacity: 0.5; letter-spacing: 1ex; width: 320px; height: 40px; margin: 10px; font-family: monospace;"></textarea>
+                <!-- <div class="fullscreen-box">
                     <button id="fullscreen">Fullscreen</button>
-                </div>
+                </div> -->
 			</div>
 
 			<div class="minor-section">

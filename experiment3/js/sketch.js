@@ -12,68 +12,209 @@ const VALUE2 = 2;
 
 // Globals
 let myInstance;
-let canvasContainer;
+let canvasContainer = $("#canvas-container");
+let tileCanvas;
+let bgLayer;
+const asciiBox = document.getElementById("asciiBox");
 var centerHorz, centerVert;
 
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
-}
+const TILE_SIZE = 16;   // size of tiles in tileset, in px
 
 function resizeScreen() {
-  centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
-  centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
   console.log("Resizing...");
-  resizeCanvas(canvasContainer.width(), canvasContainer.height());
+
+  // get actual w, h
+  let rawW = canvasContainer.width();
+  let rawH = canvasContainer.height();
+
+  // snap to nearest multiple of TILE_SIZE
+  let boxW = rawW - (rawW % TILE_SIZE);
+  let boxH = rawH - (rawH % TILE_SIZE);
+
+  centerHorz = boxW / 2; // Adjusted for drawing logic
+  centerVert = boxH / 2; // Adjusted for drawing logic
+
+  // resize ascii box 
+  asciiBox.style.width =  `${boxW}px`;
+  asciiBox.style.height = `${boxH}px`;
+
+  // update grid dims
+  asciiBox.rows = boxH / TILE_SIZE;
+  asciiBox.cols = boxW  / TILE_SIZE;
+
+  numRows = asciiBox.rows;
+  numCols = asciiBox.cols;
+
+  resizeCanvas(boxW, boxH);
   // redrawCanvas(); // Redraw everything based on new size
 }
 
-// setup() function is called once when the program starts
-function setup() {
-  // place our canvas, making it fit our container
-  canvasContainer = $("#canvas-container");
-  let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-  canvas.parent("canvas-container");
-  // resize canvas is the page is resized
+/* exported preload, setup, draw, placeTile */
+/* global generateGrid drawGrid */
+let seed = 0;
+let tilesetImage;
+let currentGrid = [];
+let numRows, numCols;
 
-  // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
+// TILES
+const ASCII_map = {
+  "_": "ground",
+  "#": "wall",
+  "~": "corridor",
+  "|": "empty",
+}
+const world = {
+  dungeon: {
+  ground: {
+      cols: [0, 1, 2, 3],
+      rows: [9]
+  },
+  wall: {
+      cols: [21],
+      rows: [21],
+      transition: {
+          topleft:    {i: 9,  j: 4},
+          top:        {i: 9,  j: 5},
+          topright:   {i: 9,  j: 6},
+          left:       {i: 10, j: 4},
+          right:      {i: 10, j: 6},
+          btmleft:    {i: 11, j: 4},
+          btm:        {i: 11, j: 5},
+          btmright:   {i: 11, j: 6},
+          // testing vals
+          "0":    {i: 0,  j: 19},
+          "1":    {i: 0,  j: 0},      // lt green
+          "2":    {i: 0,  j: 1},      // dark green
+          "3":    {i: 0,  j: 3},      // brown
+          "4":    {i: 20,  j: 0},     // snowy tree   ////
+          "5":    {i: 20,  j: 12},    // ice
+          "6":    {i: 5, j: 11},  //top{i: 0,  j: 12},     // white
+          "7":    {i: 5, j: 9},   //bttm{i: 0,  j: 13},     // light blue
+          "8":    {i: 0,  j: 14},     // dark blue    ////
+          "9":    {i: 6, j: 10},//left{i: 0,  j: 15},     // grey
+          "10":   {i: 0,  j: 18},     // yellow
+          "11":   {i: 0,  j: 28},     // chest
+          "12":   {i: 14, j: 0},      // green tree
+          "13":   {i: 14, j: 3},      // orange tree
+          "14":   {i: 14, j: 6},      // dark green tree
+          "15":   {i: 14, j: 9},      // brown tree
+      }
+  },
+  corridor: {
+      cols: [0, 1, 2, 3],
+      rows: [9]
+  },
+  empty: {
+      cols: [0, 1, 2, 3],
+      rows: [10]
+  }
+  }
+}
+let worldType = "dungeon";
+let bitVals;
+
+function preload() {
+  tilesetImage = loadImage('./assets/tileset.png');
+}
+
+function reseed() {
+  seed = (seed | 0) + 1109;
+  randomSeed(seed);
+  noiseSeed(seed);
+  select("#seedReport").html("seed " + seed);
+  regenerateGrid();
+}
+
+function regenerateGrid() {
+  select("#asciiBox").value(gridToString(generateGrid(numCols, numRows, "dungeon")));
+  reparseGrid();
+}
+
+function reparseGrid() {
+  currentGrid = stringToGrid(select("#asciiBox").value());
+}
+
+function gridToString(grid) {
+  let rows = [];
+  for (let i = 0; i < grid.length; i++) {
+    rows.push(grid[i].join(""));
+  }
+  return rows.join("\n");
+}
+
+function stringToGrid(str) {
+  let grid = [];
+  let lines = str.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    let row = [];
+    let chars = lines[i].split("");
+    for (let j = 0; j < chars.length; j++) {
+      row.push(chars[j]);
+    }
+    grid.push(row);
+  }
+  return grid;
+}
+
+function setup() {
+  numCols = select("#asciiBox").attribute("rows") | 0;
+  numRows = select("#asciiBox").attribute("cols") | 0;
+
+  tileCanvas = createCanvas(TILE_SIZE * numCols, TILE_SIZE * numRows).parent("canvas-container");
+
+  select("canvas").elt.getContext("2d").imageSmoothingEnabled = false;
+  select("#reseedButton").mousePressed(reseed);
+  select("#asciiBox").input(reparseGrid);
 
   $(window).resize(function() {
     resizeScreen();
+    regenerateGrid();
   });
+  
   resizeScreen();
+  reseed();
+
+  bgLayer = createGraphics(width, height);
+  bgLayer.noSmooth(); // Keep that pixel aesthetic
+  backgroundVoid();
 }
 
-// draw() function is called repeatedly, it's the main animation loop
+
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
-
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
-
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+  randomSeed(seed);
+  image(bgLayer, 0, 0);
+  drawGrid(currentGrid);
+  if(splitVis && splitVis.width > 0 && splitVis.height > 0) {
+    image(splitVis, 0, 0); // debug/demo to show BSP splits
+  }
 }
 
-// mousePressed() function is called once after every time a mouse button is pressed
-function mousePressed() {
-    // code to run when mouse is pressed
+function placeTile(i, j, ti, tj) {
+  image(tilesetImage, 
+    floor(TILE_SIZE * j), floor(TILE_SIZE * i), 
+    TILE_SIZE, TILE_SIZE, 
+    floor(TILE_SIZE/2 * ti), floor(TILE_SIZE/2 * tj), 
+    TILE_SIZE/2, TILE_SIZE/2
+  );
 }
+
+function backgroundVoid(){
+  bgLayer.clear();
+
+  for(let i = 0; i < numRows; i++){
+    for(let j = 0; j < numCols; j++){
+      let tile = {
+        i: random(world[worldType].empty.cols),
+        j: random(world[worldType].empty.rows),
+       }
+
+       bgLayer.image(tilesetImage, 
+        floor(TILE_SIZE * j), floor(TILE_SIZE * i), 
+        TILE_SIZE, TILE_SIZE, 
+        floor(TILE_SIZE/2 * tile.i), floor(TILE_SIZE/2 * tile.j), 
+        TILE_SIZE/2, TILE_SIZE/2
+      );
+    }
+  }
+}
+
