@@ -98,9 +98,14 @@ function stringToGrid(str) {
 
 function switchWorldType(){
   let old_type = WORLD_TYPE;
-  
+
   if(WORLD_TYPE === "dungeon"){ WORLD_TYPE = "overworld"; }
   else { WORLD_TYPE = "dungeon"; }
+
+  bgLayer.clear();
+  bgLayer = createGraphics(width, height);
+  bgLayer.noSmooth(); // Keep that pixel aesthetic
+  backgroundVoid();
 
   select("#worldSwitch").html(old_type);
 }
@@ -119,8 +124,9 @@ function setup() {
 
   $(window).resize(function() {
     resizeScreen();
-    regenerateGrid();
+    //regenerateGrid();
 
+    bgLayer.clear();
     bgLayer = createGraphics(width, height);
     bgLayer.noSmooth(); // Keep that pixel aesthetic
     backgroundVoid();

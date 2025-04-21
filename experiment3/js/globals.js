@@ -71,26 +71,26 @@ const world = {
         ".": "empty",
     },
     ground: {
-      cols: [0, 1, 2, 3],
-      rows: [10]
+      cols: [0],
+      rows: [0]
     },
     wall: {
-      cols: [21],
-      rows: [21],
+      cols: [0],
+      rows: [3],
       transition: {
-        "1":    {i: 5,  j: 9},      // BTTM     
-        "2":    {i: 4,  j: 10},     // RIGHT   
-        "4":    {i: 6,  j: 10},     // LEFT     
-        "8":    {i: 5,  j: 11},     // TOP       
+        "1":    {i: 0,  j: 3},      // BTTM     
+        "2":    {i: 0,  j: 3},     // RIGHT   
+        "4":    {i: 0,  j: 3},     // LEFT     
+        "8":    {i: 0,  j: 3},     // TOP       
       }
     },
     corridor: {
-      cols: [0, 1, 2, 3],
-      rows: [10]
+      cols: [0],
+      rows: [0]
     },
     empty: {
-      cols: [21, 22, 23, 24],
-      rows: [21, 22, 23, 24]
+      cols: [0],
+      rows: [1]
     },
     bitmasking: {
       focus: ["wall"],
