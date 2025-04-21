@@ -102,6 +102,7 @@ function switchWorldType(){
   if(WORLD_TYPE === "dungeon"){ WORLD_TYPE = "overworld"; }
   else { WORLD_TYPE = "dungeon"; }
 
+  regenerateGrid(); 
   bgLayer.clear();
   bgLayer = createGraphics(width, height);
   bgLayer.noSmooth(); // Keep that pixel aesthetic

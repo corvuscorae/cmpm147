@@ -2,7 +2,7 @@ let seed = 0;
 let asciiGrid = [];
 let numRows, numCols;
 
-let WORLD_TYPE = "dungeon";
+let WORLD_TYPE = "overworld";
 
 // TILE IDS
 const world = {
@@ -65,45 +65,60 @@ const world = {
       //      define placement logic in bsp, and add an attribute with the same
       //      name to dungeon object 
       //      (i.e. "&": "monster" --> add monster: {$tile_info})
-        "~": "ground",
-        "#": "wall",
-        "+": "corridor",
-        ".": "empty",
+        "`": "grass",
+        "~": "water",
+        "+": "forest",
+        "*": "shore",
+        "-": "empty",
     },
-    ground: {
-      cols: [0],
+    grass: {
+      cols: [0,1,2,3],
       rows: [0]
     },
-    wall: {
-      cols: [0],
+    water: {
+      cols: [0, 1, 2, 3],
+      rows: [14],
+    },
+    forest: {
+      cols: [14],
+      rows: [0]
+    },
+    shore: {
+      cols: [0,1,2,3],
       rows: [3],
       transition: {
-        "1":    {i: 0,  j: 3},      // BTTM     
-        "2":    {i: 0,  j: 3},     // RIGHT   
-        "4":    {i: 0,  j: 3},     // LEFT     
-        "8":    {i: 0,  j: 3},     // TOP       
+        "1":    {i: 0,  j: 4},       // BTTM     
+        "2":    {i: 0,  j: 10},        // RIGHT   
+        "3":    {i: 0,  j: 4},        // ???   
+        "4":    {i: 0,  j: 4},        // LEFT     
+        "5":    {i: 0,  j: 4},        // ???     
+        "6":    {i: 0,  j: 4},        // ???     
+        "7":    {i: 0,  j: 4},        // ???     
+        "8":    {i: 0,  j: 4},        // TOP       
+        "9":    {i: 0,  j: 4},        // TOP       
+        "10":   {i: 0,  j: 4},        // TOP       
+        "11":   {i: 0,  j: 4},        // TOP       
+        "12":   {i: 0,  j: 4},        // TOP       
+        "13":   {i: 0,  j: 4},        // TOP       
+        "14":   {i: 0,  j: 4},        // TOP       
+        "15":   {i: 0,  j: 4},        // TOP       
       }
     },
-    corridor: {
+    empty: {        
       cols: [0],
-      rows: [0]
-    },
-    empty: {
-      cols: [0],
-      rows: [1]
+      rows: [14]
     },
     bitmasking: {
-      focus: ["wall"],
-      target: ["ground"]
+      focus: ["shore"],
+      target: ["empty"]
     },
     config: {
+      // noise settings
       MIN_LEAF_SZ: 6,
       MAX_DEPTH: 4,
       RM_PADDING: 1,  // leave room for walls
       MIN_RM_SZ: 6,
-      debug: {
-          show_partitions: false
-      }
+      debug: { }
     }
   }
 }
