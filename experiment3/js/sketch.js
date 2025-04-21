@@ -15,9 +15,11 @@ let myInstance;
 let canvasContainer = $("#canvas-container");
 let tileCanvas;
 let bgLayer;
+let splitVis;
 const asciiBox = document.getElementById("asciiBox");
 var centerHorz, centerVert;
 
+let tilesetImage;
 const TILE_SIZE = 16;   // size of tiles in tileset, in px
 
 function resizeScreen() {
@@ -51,46 +53,6 @@ function resizeScreen() {
 
 /* exported preload, setup, draw, placeTile */
 /* global generateGrid drawGrid */
-let seed = 0;
-let tilesetImage;
-let currentGrid = [];
-let numRows, numCols;
-
-// TILES
-const ASCII_map = {
-  "~": "ground",
-  "#": "wall",
-  "+": "corridor",
-  ".": "empty",
-}
-const world = {
-  dungeon: {
-    ground: {
-      cols: [0, 1, 2, 3],
-      rows: [9]
-    },
-    wall: {
-      cols: [21],
-      rows: [21],
-      transition: {
-        "1":    {i: 5,  j: 9},  // BTTM     
-        "2":    {i: 4,  j: 10}, // RIGHT   
-        "4":    {i: 6,  j: 10}, // LEFT     
-        "8":    {i: 5,  j: 11},  // TOP       
-      }
-    },
-    corridor: {
-      cols: [0, 1, 2, 3],
-      rows: [9]
-    },
-    empty: {
-      cols: [21, 22, 23, 24],
-      rows: [21, 22, 23, 24]
-    }
-  }
-}
-let worldType = "dungeon";
-
 function preload() {
   tilesetImage = loadImage('./assets/tileset.png');
 }
@@ -104,12 +66,12 @@ function reseed() {
 }
 
 function regenerateGrid() {
-  select("#asciiBox").value(gridToString(generateGrid(numCols, numRows, "dungeon")));
+  select("#asciiBox").value(gridToString(generateGrid(numCols, numRows)));
   reparseGrid();
 }
 
 function reparseGrid() {
-  currentGrid = stringToGrid(select("#asciiBox").value());
+  asciiGrid = stringToGrid(select("#asciiBox").value());
 }
 
 function gridToString(grid) {
@@ -165,7 +127,8 @@ function setup() {
 function draw() {
   randomSeed(seed);
   image(bgLayer, 0, 0);
-  drawGrid(currentGrid);
+  drawGrid(asciiGrid, true);
+
   if(splitVis && splitVis.width > 0 && splitVis.height > 0) {
     image(splitVis, 0, 0); // debug/demo to show BSP splits
   }
@@ -182,12 +145,11 @@ function placeTile(i, j, ti, tj) {
 
 function backgroundVoid(){
   bgLayer.clear();
-
   for(let i = 0; i < numRows; i++){
     for(let j = 0; j < numCols; j++){
       let tile = {
-        i: random(world[worldType].empty.cols),
-        j: random(world[worldType].empty.rows),
+        i: random(world[WORLD_TYPE].empty.cols),
+        j: random(world[WORLD_TYPE].empty.rows),
        }
 
        bgLayer.image(tilesetImage, 

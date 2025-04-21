@@ -1,22 +1,12 @@
 /* exported generateGrid, drawGrid */
 /* global placeTile */
-let bitVals;
-
-function generateGrid(numCols, numRows, type) {
+function generateGrid(numCols, numRows) {
     let grid = [];  // empty
  
-    worldType = type;
-    let BSP_settings = {
-        MIN_LEAF_SZ: 6,
-        MAX_DEPTH: 4,
-        RM_PADDING: 1,  // leave room for walls
-        MIN_RM_SZ: 6,
-        debug: {
-            partitions: false
-        }
+    if(WORLD_TYPE === "dungeon"){
+        grid = new BSP(numCols, numRows).get();
     }
-    BSP(grid, numCols, numRows, BSP_settings);
-
+    if(WORLD_TYPE === "overworld") console.log("meep")
     return grid;
 }
 
@@ -41,35 +31,45 @@ function getTransTile(t){
 }
 
 // draw tiles based on ASCII values
-function drawGrid(grid) {
-    const wall = getKeyByValue(ASCII_map, "wall");
-    const ground = getKeyByValue(ASCII_map, "ground");    
-    bitVals = bitmaskValues(grid, wall, ground);
+function drawGrid(grid, bitmask) {
+    let bitVals = (bitmask) ? getBitVals(grid) : null;
 
     for(let i = 0; i < grid.length; i++) {
       for(let j = 0; j < grid[i].length; j++) {
         //if (grid[i][j] == "_") {
         // get feature (i.e. walls, ground, etc.) represented by current ASCII key
-        let feature = ASCII_map[grid[i][j]];
-        let trans = getTransTile(bitVals[i][j]);
+        let feature = ascii[grid[i][j]];
+        if(!feature) feature = "empty";     // if random char is input, default to empty
+        let trans = `${bitVals[i][j]}`;
         let tile = { }
-        if(!trans){
+        if(!trans || trans === '0' || !world[WORLD_TYPE][feature].transition[trans]){
             tile = {
-                i: floor(random(world[worldType][feature].cols)),
-                j: floor(random(world[worldType][feature].rows)),
+                i: floor(random(world[WORLD_TYPE][feature].cols)),
+                j: floor(random(world[WORLD_TYPE][feature].rows)),
             }
         } else {
             tile = {
-                i: world[worldType].wall.transition[trans].i,
-                j: world[worldType].wall.transition[trans].j,
+                i: world[WORLD_TYPE][feature].transition[trans].i,
+                j: world[WORLD_TYPE][feature].transition[trans].j,
             }
         }
 
         placeTile(i, j, tile.i, tile.j);
       }
     }
-    
+}
 
+function getBitVals(grid){
+    let focusVal = world[WORLD_TYPE].bitmasking.focus[0];
+    let targetVal = world[WORLD_TYPE].bitmasking.target[0];
+
+    let focus = getKeyByValue(world[WORLD_TYPE].ascii, focusVal);
+    let target = getKeyByValue(world[WORLD_TYPE].ascii, targetVal);
+
+    // if i add more focus/target pairs...
+    // ...add a for loop here to cycle thru all of em
+    
+    return bitmaskValues(grid, focus, target);
 }
 
 function getKeyByValue(object, value) {
@@ -82,7 +82,7 @@ function getKeyByValue(object, value) {
 }
 
 //*** AUTOTILING ***//
-function bitmaskValues(grid, mask, target){
+function bitmaskValues(grid, focus, target){
     let result = [];
     // bits associates with directions for bitmap
     let N = 0b0001; // north
@@ -90,13 +90,12 @@ function bitmaskValues(grid, mask, target){
     let E = 0b0100; // east
     let S = 0b1000; // south
 
-    const empty = getKeyByValue(ASCII_map, "empty");
-    for(let i = 0; i < numRows; i++){
+    for(let i = 0; i < grid.length; i++){
         result[i] = [];
-        for(let j = 0; j < numCols; j++){
+        for(let j = 0; j < grid[i].length; j++){
             let bit = 0b0000;
             let val = grid[i][j];
-            if(val === mask){
+            if(val === focus){
                 if(i > 0 && grid[i-1][j] === target){ // if current tile has a NORTH neighbor...
                     // ...add it to current tile's bitmap value
                     bit += N;      
