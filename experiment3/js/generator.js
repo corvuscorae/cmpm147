@@ -17,24 +17,6 @@ function generateGrid(numCols, numRows, type) {
     }
     BSP(grid, numCols, numRows, BSP_settings);
 
-    const wall = getKeyByValue(ASCII_map, "wall");
-    const ground = getKeyByValue(ASCII_map, "ground");
-
-    bitVals = bitmaskValues(grid, wall, ground);
-    
-    /*
-    let print = "";
-    for(let i = 0; i < bitVals.length; i++){
-        for(let j = 0; j < bitVals[i].length; j++){
-            let str = `${bitVals[i][j]}`;
-            str = str.padEnd(3, ' ') 
-            print += str;
-        }
-        print += `\n`;
-    }
-    console.log(print)
-    */
-
     return grid;
 }
 
@@ -60,6 +42,10 @@ function getTransTile(t){
 
 // draw tiles based on ASCII values
 function drawGrid(grid) {
+    const wall = getKeyByValue(ASCII_map, "wall");
+    const ground = getKeyByValue(ASCII_map, "ground");    
+    bitVals = bitmaskValues(grid, wall, ground);
+
     for(let i = 0; i < grid.length; i++) {
       for(let j = 0; j < grid[i].length; j++) {
         //if (grid[i][j] == "_") {

@@ -58,35 +58,35 @@ let numRows, numCols;
 
 // TILES
 const ASCII_map = {
-  "_": "ground",
+  "~": "ground",
   "#": "wall",
-  "~": "corridor",
-  "|": "empty",
+  "+": "corridor",
+  ".": "empty",
 }
 const world = {
   dungeon: {
-  ground: {
+    ground: {
       cols: [0, 1, 2, 3],
       rows: [9]
-  },
-  wall: {
+    },
+    wall: {
       cols: [21],
       rows: [21],
       transition: {
-          "1":    {i: 5,  j: 9},  // BTTM     
-          "2":    {i: 4,  j: 10}, // RIGHT   
-          "4":    {i: 6,  j: 10}, // LEFT     
-          "8":    {i: 5,  j: 11},  // TOP       
+        "1":    {i: 5,  j: 9},  // BTTM     
+        "2":    {i: 4,  j: 10}, // RIGHT   
+        "4":    {i: 6,  j: 10}, // LEFT     
+        "8":    {i: 5,  j: 11},  // TOP       
       }
-  },
-  corridor: {
+    },
+    corridor: {
       cols: [0, 1, 2, 3],
       rows: [9]
-  },
-  empty: {
+    },
+    empty: {
       cols: [21, 22, 23, 24],
       rows: [21, 22, 23, 24]
-  }
+    }
   }
 }
 let worldType = "dungeon";

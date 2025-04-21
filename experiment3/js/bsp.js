@@ -5,7 +5,7 @@ let grid_gbl;   // global copy of grid to clean up function calls
 let set;        // global variable to hold setting passed in by generator
 
 function BSP(grid, w, h, settings){
-    let empty = "|";  // make sure this corresponds with val in ASCII_map
+    let empty = getKeyByValue(ASCII_map, "empty");  // make sure this corresponds with val in ASCII_map
     set = settings;
     
     // init an empty dungeon
@@ -34,6 +34,11 @@ function BSP(grid, w, h, settings){
     splitSpace(root, 0, leaves);
     placeRooms(leaves);
     connectRooms(root);
+
+    // draw room interiors last so they cover corridor marks
+    for(let leaf of leaves){
+      if(leaf.room) drawRoom(leaf.room);
+    }
 
     // DEBUG/demo: show split space overlay 
     if(settings.debug.partitions) showSplits(leaves);
@@ -92,28 +97,12 @@ function placeRooms(leaves){
         let roomY = leaf.y + set.RM_PADDING + floor(random(0, maxH - roomH));
 
         leaf.room = {
-            x: roomX, y: roomY,
-            w: roomW, h: roomH,
-            center: { x: roomX + floor(roomW / 2), y: roomY + floor(roomH / 2) },
+          x: roomX, y: roomY,
+          w: roomW, h: roomH,
+          center: { x: roomX + floor(roomW / 2), y: roomY + floor(roomH / 2) },
         }
-      
-        // put ground tiles in rooms
-        let ground = getKeyByValue(ASCII_map, "ground");
-        carveSpace(roomX, roomY, roomW, roomH, ground);
 
-        // put walls around rooms
-        let wall = getKeyByValue(ASCII_map, "wall");
-        let leftWall = roomX - 1;
-        if(leftWall >= 0){ carveSpace(leftWall, roomY, 1, roomH, wall); }
-
-        let rightWall = roomX + roomW;
-        if(rightWall < grid_gbl[0].length){ carveSpace(rightWall, roomY, 1, roomH, wall); }
-        
-        let topWall = roomY - 1;
-        if(topWall >= 0){ carveSpace(roomX, topWall, roomW, 1, wall); }
-
-        let bttmWall = roomY + roomH;
-        if(bttmWall >= 0){ carveSpace(roomX, bttmWall, roomW, 1, wall); }
+        drawWalls(leaf.room);
       }
     }
 }
@@ -133,7 +122,7 @@ function connectRooms(node){
 
     // if both subtrees have rooms, connect them
     if(roomA && roomB){
-        createCorridor(roomA.center, roomB.center);
+      drawCorridor(roomA, roomB);
     }
 }
 
@@ -187,6 +176,29 @@ function getChild(node, split, dir){
     }
 }
 
+//* step two helper
+function drawRoom(room){
+  // put ground tiles in rooms
+  let ground = getKeyByValue(ASCII_map, "ground");
+  carveSpace(room.x, room.y, room.w, room.h, ground);
+}
+
+function drawWalls(room){
+    // put walls around rooms
+    let wall = getKeyByValue(ASCII_map, "wall");
+    let leftWall = room.x - 1;
+    if(leftWall >= 0){ carveSpace(leftWall, room.y, 1, room.h, wall); }
+  
+    let rightWall = room.x + room.w;
+    if(rightWall < grid_gbl[0].length){ carveSpace(rightWall, room.y, 1, room.h, wall); }
+    
+    let topWall = room.y - 1;
+    if(topWall >= 0){ carveSpace(room.x, topWall, room.w, 1, wall); }
+  
+    let bttmWall = room.y + room.h;
+    if(bttmWall >= 0){ carveSpace(room.x, bttmWall, room.w, 1, wall); }
+}
+
 //* step two-three helpers:
 // replace grid coords with tile
 function carveSpace(x, y, w, h, tile){
@@ -217,10 +229,12 @@ function findSubtreeRooms(node, rooms){
 }
 
 // choose a ranomd point from A to B to carve out for a corridor
-function createCorridor(A, B){
+function drawCorridor(rA, rB){
     let corridor = getKeyByValue(ASCII_map, "corridor");
+    let A = rA.center;
+    let B = rB.center;
 
-    if(random() > 0.5){
+    if(random() > 0.0){
         carveSpace(min(A.x, B.x), A.y, abs(A.x - B.x) + 1, 1, corridor)
         carveSpace(B.x, min(A.y, B.y), 1, abs(A.y - B.y) + 1, corridor)
     } else {
