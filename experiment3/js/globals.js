@@ -65,11 +65,10 @@ const world = {
       //      define placement logic in bsp, and add an attribute with the same
       //      name to dungeon object 
       //      (i.e. "&": "monster" --> add monster: {$tile_info})
-        "`": "grass",
-        "~": "water",
-        "+": "forest",
-        "*": "shore",
-        "-": "empty",
+        "-": "grass",
+        "^": "forest",
+        "+": "shore",
+        "~": "empty",
     },
     grass: {
       cols: [0,1,2,3],
@@ -86,31 +85,14 @@ const world = {
     shore: {
       cols: [0,1,2,3],
       rows: [3],
-      transition: {
-        "1":    {i: 0,  j: 4},       // BTTM     
-        "2":    {i: 0,  j: 10},        // RIGHT   
-        "3":    {i: 0,  j: 4},        // ???   
-        "4":    {i: 0,  j: 4},        // LEFT     
-        "5":    {i: 0,  j: 4},        // ???     
-        "6":    {i: 0,  j: 4},        // ???     
-        "7":    {i: 0,  j: 4},        // ???     
-        "8":    {i: 0,  j: 4},        // TOP       
-        "9":    {i: 0,  j: 4},        // TOP       
-        "10":   {i: 0,  j: 4},        // TOP       
-        "11":   {i: 0,  j: 4},        // TOP       
-        "12":   {i: 0,  j: 4},        // TOP       
-        "13":   {i: 0,  j: 4},        // TOP       
-        "14":   {i: 0,  j: 4},        // TOP       
-        "15":   {i: 0,  j: 4},        // TOP       
-      }
     },
     empty: {        
-      cols: [0],
+      cols: [0,1,2,3],
       rows: [14]
     },
     bitmasking: {
-      focus: ["shore"],
-      target: ["empty"]
+      focus: [],
+      target: []
     },
     config: {
       // noise settings

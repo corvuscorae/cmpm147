@@ -87,26 +87,10 @@ function bitmaskValues(grid, focus, target){
             let val = grid[i][j];
 
             if(val === focus){
-                let empty = getKeyByValue(world[WORLD_TYPE].ascii.empty);
-
-                // if target = "all", check for any neighbors to grid val
-                if(target === "all"){
-                    if(i > 0 && grid[i-1][j] !== empty && grid[i-1][j] !== focus){ 
-                        bit += N; 
-                        if(grid[i-1][j] === focus) result[i-1][j] += S;
-                    }
-                    if(j > 0 && grid[i][j-1] !== empty && grid[i][j-1] !== focus){ 
-                        bit += W; 
-                        if(grid[i][j-1] === focus) result[i][j-1] += E;
-                    }  
-                    //if(i < numRows-1 && grid[i+1][j] !== empty){ bit += S; }
-                    //if(j < numCols-1 && grid[i][j+1] !== empty){ bit += E; }  
-                } else {
-                    if(i > 0 && grid[i-1][j] === target){ bit += N; }
-                    if(j > 0 && grid[i][j-1] === target){ bit += W; }  
-                    if(i < numRows-1 && grid[i+1][j] === target){ bit += S; }
-                    if(j < numCols-1 && grid[i][j+1] === target){ bit += E; }  
-                }
+                if(i > 0 && grid[i-1][j] === target){ bit += N; }
+                if(j > 0 && grid[i][j-1] === target){ bit += W; }  
+                if(i < numRows-1 && grid[i+1][j] === target){ bit += S; }
+                if(j < numCols-1 && grid[i][j+1] === target){ bit += E; }  
             } 
             result[i][j] = bit;
         }

@@ -15,7 +15,7 @@ class PerlinWorld{
     }
 
     generate() {
-        let level = 200;
+        let level = 100;
         let scale = 0.08;           // lower = larger scale
 
         let empty = getKeyByValue(this.ascii, "empty"); 
@@ -31,7 +31,7 @@ class PerlinWorld{
             
                 let c = level * noise(nx, ny);
             
-                if (c < 70) { 
+                if (c < 50) { 
                     // leave empty (for water)
                     this.grid[x][y] = empty;
                 } 
@@ -40,7 +40,7 @@ class PerlinWorld{
                     this.grid[x][y] = grass;
 
                     //if(c < 100 && c > 90) this.grid[x][y] = "+" // forest
-                    if(c < 80) this. grid[x][y] = shore
+                    if(c < 60) this. grid[x][y] = shore
                 }
             }
         }
