@@ -19,9 +19,6 @@ let splitVis;
 const asciiBox = document.getElementById("asciiBox");
 var centerHorz, centerVert;
 
-let tilesetImage;
-const TILE_SIZE = 16;   // size of tiles in tileset, in px
-
 function resizeScreen() {
   console.log("Resizing...");
 
@@ -68,10 +65,12 @@ function reseed() {
 function regenerateGrid() {
   select("#asciiBox").value(gridToString(generateGrid(numCols, numRows)));
   reparseGrid();
+  gfx_changed = true; // triggers grid re-draw, image placement
 }
 
 function reparseGrid() {
   asciiGrid = stringToGrid(select("#asciiBox").value());
+  gfx_changed = true;
 }
 
 function gridToString(grid) {
@@ -103,11 +102,11 @@ function switchWorldType(){
   else { WORLD_TYPE = "dungeon"; }
 
   regenerateGrid(); 
-  bgLayer.clear();
-  bgLayer = createGraphics(width, height);
-  bgLayer.noSmooth(); // Keep that pixel aesthetic
-  backgroundVoid();
-
+  //bgLayer.clear();
+  //bgLayer = createGraphics(width, height);
+  //bgLayer.noSmooth(); 
+  //backgroundVoid();
+//
   select("#worldSwitch").html(old_type);
 }
 
@@ -127,33 +126,59 @@ function setup() {
     resizeScreen();
     //regenerateGrid();
 
-    bgLayer.clear();
-    bgLayer = createGraphics(width, height);
-    bgLayer.noSmooth(); // Keep that pixel aesthetic
-    backgroundVoid();
+    //bgLayer.clear();
+    //bgLayer = createGraphics(width, height);
+    //bgLayer.noSmooth(); // Keep that pixel aesthetic
+    //backgroundVoid();
+    gfx_changed = true; // triggers grid re-draw, image placement
   });
   
   resizeScreen();
   reseed();
 
-  bgLayer = createGraphics(width, height);
-  bgLayer.noSmooth(); // Keep that pixel aesthetic
-  backgroundVoid();
+  //bgLayer = createGraphics(width, height);
+  //bgLayer.noSmooth(); // Keep that pixel aesthetic
+  //backgroundVoid();
 }
 
 
 function draw() {
   randomSeed(seed);
-  image(bgLayer, 0, 0);
-  drawGrid(asciiGrid, true);
+  //image(bgLayer, 0, 0);
+
+  // show every layer made in drawGrid()
+  if(gfx_changed){
+    console.log("updating gfx objcts...")
+
+    // clear existing layers
+    // TODO: MAKE THIS ACTUALLY CLEAR LAYERS
+    //    doesnt seem to have an effect of visuals, but should do for efficiency's sake
+    for(let layerID in world[WORLD_TYPE].gfx){
+      let layer = world[WORLD_TYPE].gfx[layerID]
+      layer.remove();
+      layer = undefined;
+    }
+
+    // update grid (sets new layer data)
+    drawGrid(asciiGrid, true);
+
+    // draw updated layers
+    for(let layerID in world[WORLD_TYPE].gfx){
+      let layer = world[WORLD_TYPE].gfx[layerID]
+      layer.noSmooth(); // keeps pixel aesthetic
+      image(layer, 0, 0);
+    }
+
+    gfx_changed = false;
+  }
 
   if(splitVis && splitVis.width > 0 && splitVis.height > 0) {
     image(splitVis, 0, 0); // debug/demo to show BSP splits
   }
 }
 
-function placeTile(i, j, ti, tj) {
-  image(tilesetImage, 
+function placeTile(gfx, i, j, ti, tj) {
+  gfx.image(tilesetImage, 
     floor(TILE_SIZE * j), floor(TILE_SIZE * i), 
     TILE_SIZE, TILE_SIZE, 
     floor(TILE_SIZE/2 * ti), floor(TILE_SIZE/2 * tj), 

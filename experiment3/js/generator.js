@@ -15,37 +15,76 @@ function generateGrid(numCols, numRows) {
 
 // draw tiles based on ASCII values
 function drawGrid(grid, bitmask) {
-    let bitVals = (bitmask) ? getBitVals(grid) : null;
+    // ok changing this to draw each symbol to its own layer @_@
+    
+    // may need to change the logic of this fcn to work with layers, commenting out for meow:
+    let bitVals = (bitmask) ? bitmaskValues(grid) : null;
+    console.log(bitVals)
+
+    // make a layer (graphics object?) for every symbol we find in world[WORLD_TYPE].ascii
+    let myWorld = world[WORLD_TYPE];
+    for(let type in myWorld.ascii){
+        myWorld.gfx[type] = createGraphics(width, height);
+    }
+
+    // loop through whole grid, placing tiles only on their respective layers
 
     for(let i = 0; i < grid.length; i++) {
       for(let j = 0; j < grid[i].length; j++) {
-        //if (grid[i][j] == "_") {
         // get feature (i.e. walls, ground, etc.) represented by current ASCII key
-        let feature = world[WORLD_TYPE].ascii[grid[i][j]];
+        let feature = myWorld.ascii[grid[i][j]];
         if(!feature) feature = "empty";     // if random char is input, default to empty
-        let trans = `${bitVals[i][j]}`;
+
+        let trans =`${bitVals[i][j]}`;
         let tile = { }
-
-        if(!trans || trans === '0' || 
-            !world[WORLD_TYPE][feature].transition || 
-            !world[WORLD_TYPE][feature].transition[trans])
-        {
-            tile = {
-                i: floor(random(world[WORLD_TYPE][feature].cols)),
-                j: floor(random(world[WORLD_TYPE][feature].rows)),
-            }
-        } else {
-            tile = {
-                i: world[WORLD_TYPE][feature].transition[trans].i,
-                j: world[WORLD_TYPE][feature].transition[trans].j,
-            }
+        let transTile = { }
+        let gfx = myWorld.gfx[grid[i][j]];
+        
+        // place tiles
+        tile = {
+            i: floor(random(myWorld[feature].cols)),
+            j: floor(random(myWorld[feature].rows)),
         }
+        placeTile(gfx, i, j, tile.i, tile.j);
+        
+        // check for transitions
+        //if(trans && myWorld[feature].transition &&        // there's a transition here,
+        //    myWorld[feature].transition[trans])            //  add a transition tile to gfx buffer 
+        //{
+        //    transTile = {
+        //        i: myWorld[feature].transition[trans].i,
+        //        j: myWorld[feature].transition[trans].j,
+        //    }
+        //} else { transTile = false; } 
 
-        placeTile(i, j, tile.i, tile.j);
+        
+        if(trans && myWorld[feature].transition){ 
+            console.log("----");
+            console.log(transTile, myWorld[feature].transition["N"]);
+            for(let d of TRANS_DIR[trans]){
+                let dir = DIR[d];
+                if(!dir) continue;
+
+                let di =  i + dir.dx;
+                let dj = j + dir.dy;
+
+                if(di < 0 || di > grid.length || dj < 0 || dj > grid[0].length) continue;
+                transTile = {
+                    i: myWorld[feature].transition[d].i,
+                    j: myWorld[feature].transition[d].j,
+                }
+                
+                console.log(trans, d, dir, i, j, "...", di, dj)
+                //placeTile(gfx, i, j, transTile.i, transTile.j+14); // DEBUG: puts a yellow square over tile w/ transitions
+                placeTile(gfx, di, dj, transTile.i /*+ (d === "W") ? 1:0*/, transTile.j); 
+            }
+            console.log("----")
+        }
       }
     }
 }
 
+/*
 function getBitVals(grid){
     let focusVal = world[WORLD_TYPE].bitmasking.focus[0];
     let focus = getKeyByValue(world[WORLD_TYPE].ascii, focusVal);
@@ -60,6 +99,7 @@ function getBitVals(grid){
     
     return bitmaskValues(grid, focus, target);
 }
+*/
 
 function getKeyByValue(object, value) {
     for (let prop in object) {
@@ -71,7 +111,9 @@ function getKeyByValue(object, value) {
 }
 
 //*** AUTOTILING ***//
-function bitmaskValues(grid, focus, target){
+// adapted from a past perlin project, *TODO: INSERT PROJECT URL AND REFERENCE URL*
+// instead of searching for any neighbor, search for self neighbors (since each symbol is drawn to its own layer)
+function bitmaskValues(pVals){
     let result = [];
     // bits associates with directions for bitmap
     let N = 0b0001; // north
@@ -79,21 +121,33 @@ function bitmaskValues(grid, focus, target){
     let E = 0b0100; // east
     let S = 0b1000; // south
 
-    for(let i = 0; i < grid.length; i++){
+    for(let i = 0; i < pVals.length; i++){
         result[i] = [];
-        for(let j = 0; j < grid[i].length; j++){
-            result[i][j] = 0;
+        for(let j = 0; j < pVals[0].length; j++){
             let bit = 0b0000;
-            let val = grid[i][j];
+            let pVal = pVals[i][j];
 
-            if(val === focus){
-                if(i > 0 && grid[i-1][j] === target){ bit += N; }
-                if(j > 0 && grid[i][j-1] === target){ bit += W; }  
-                if(i < numRows-1 && grid[i+1][j] === target){ bit += S; }
-                if(j < numCols-1 && grid[i][j+1] === target){ bit += E; }  
-            } 
+            if(pVal){
+                // TODO: dis out of whack. put it in whack and fix the weird DIR offsetting that resulted from its whackness
+                if(i > 0 && pVals[i-1][j] === pVals[i][j]){ // if current tile has a NORTH neighbor...
+                    // ...add it to current tile's bitmap value
+                    bit += N;      
+                }
+                if(j > 0 && pVals[i][j-1] === pVals[i][j]){ // if current tile has a WEST neighbor...
+                    // ...add it to current tile's bitmap value
+                    bit += W;  
+                }  
+                if(i < pVals.length-1 && pVals[i+1][j] === pVals[i][j]){ 
+                    bit += S;      
+                }
+                if(j < pVals[0].length-1 && pVals[i][j+1] === pVals[i][j]){ 
+                    bit += E;  
+                }  
+            }          
+
             result[i][j] = bit;
         }
     }
+
     return result;
 }
