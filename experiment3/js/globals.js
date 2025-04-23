@@ -24,13 +24,23 @@ const world = {
         ".": "empty",
         "#": "wall",
     },
-    animate: [],
+    animate: ["~"],
     interact: {
-      //
+      "~": () => {
+        placeTile(world.overworld.gfx["~"], 
+          (floor(mouseY / TILE_SIZE)) + random(-3,3), floor(mouseX / TILE_SIZE) + random(-3,3), 
+          random(world.dungeon.ground.cols), random(world.dungeon.ground.rows)
+        );
+      }
     },
     ground: {
       cols: [0, 1, 2, 3],
-      rows: [10]
+      rows: [10],
+      anims: {
+        cols: [0, 1, 2, 3],
+        rows: [10],
+        idle: {i: 0, j: 10}
+      }
     },
     wall: {
       cols: [21],
