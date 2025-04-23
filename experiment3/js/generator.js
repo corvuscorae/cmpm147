@@ -46,6 +46,19 @@ function drawGrid(grid, bitmask) {
             j: floor(random(myWorld[feature].rows)),
         }
         placeTile(gfx, i, j, tile.i, tile.j);
+
+        // TODO: LEFT OFF HERE
+        //      > add transitions for dungeon gen
+        //      > add idle water anims
+        //          >> for user interactions, have animation change in someway on hover
+        //      > figure out how to have user interaction in dungeon (minesweeper?)
+        //      > fix persistent gfx (make them erase every reseed or whatever)
+        //      > clean up code
+        //      > fix grid lines
+        //      > add decor (biomes w/ floodfill would be cool if time allows)
+        //      > make reseed actully random
+        //      > add text box for custom seeding
+        //      > add tilebased topdown clouds (credit jackie for inspo)
         
         // check for transitions
         //if(trans && myWorld[feature].transition &&        // there's a transition here,

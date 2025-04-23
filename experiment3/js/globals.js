@@ -31,12 +31,6 @@ const world = {
     wall: {
       cols: [21],
       rows: [21],
-      transition: {
-        "1":    {i: 5,  j: 9},      // BTTM     
-        "2":    {i: 4,  j: 10},     // RIGHT   
-        "4":    {i: 6,  j: 10},     // LEFT     
-        "8":    {i: 5,  j: 11},     // TOP       
-      }
     },
     corridor: {
       cols: [0, 1, 2, 3],
