@@ -20,21 +20,28 @@ const world = {
       //      name to dungeon object 
       //      (i.e. "&": "monster" --> add monster: {$tile_info})
         "~": "ground",
-        "#": "wall",
         "+": "corridor",
         ".": "empty",
+        "#": "wall",
     },
+    animate: [],
     ground: {
       cols: [0, 1, 2, 3],
-      rows: [9]
+      rows: [10]
     },
     wall: {
       cols: [21],
       rows: [21],
+      transition: {                   
+        "N": {i: 40/8, j: 88/8},
+        "E": {i: 32/8, j: 80/8},
+        "S": {i: 40/8, j: 72/8},
+        "W": {i: 48/8, j: 80/8},
+      }
     },
     corridor: {
       cols: [0, 1, 2, 3],
-      rows: [9]
+      rows: [10]
     },
     empty: {
       cols: [21, 22, 23, 24],
@@ -57,20 +64,17 @@ const world = {
   },
   overworld: {
     ascii: {
-      // TUNABLE: ascii symbols to represent each structure
-      // REQUIRED: "ground", "wall", "corridor", and "empty" values 
-      //    > values cannnot be changes unless you also change them in bsp.js
-      //    > if you want to add more values, you'll have to define their ascii,
-      //      define placement logic in bsp, and add an attribute with the same
-      //      name to dungeon object 
-      //      (i.e. "&": "monster" --> add monster: {$tile_info})
-      // IMPORTANT: these values will be used to create layers in generator.js
-      //    --> make sure to define in layer order (first defined = bottom layer)
+      // IMPORTANT: these values will be used to 
+      // create layers in generator.js  --> make sure 
+      // to define in layer order!!!
+      //  (first defined = bottom layer)
         "~": "empty",
         "+": "shore",
         "-": "grass",
         "^": "forest",
     },
+    gfx: {},
+    animate: ["~"],
     grass: {
       cols: [0,1,2,3],
       rows: [0],
@@ -84,6 +88,11 @@ const world = {
     water: {
       cols: [0, 1, 2, 3],
       rows: [14],
+      anims: {
+        cols: [0, 1, 2, 3],
+        rows: [14],
+        idle: {i: 0, j: 14}
+      }
     },
     forest: {
       cols: [14],
@@ -99,15 +108,18 @@ const world = {
         "W":  {i: 6, j: 4},
       }
     },
-    empty: {        
-      cols: [0,1,2,3],
-      rows: [14]
+    empty: {    // water     
+      cols: [0, 1, 2, 3],
+      rows: [14],
+      anims: {
+        cols: [0, 1, 2, 3],
+        rows: [14],
+      }
     },
     bitmasking: {
       focus: [],
       target: []
     },
-    gfx: {},
     config: {
       // noise settings
       MIN_LEAF_SZ: 6,

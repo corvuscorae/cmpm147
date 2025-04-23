@@ -196,16 +196,16 @@ class BSP{
     // put walls around rooms
     let wall = getKeyByValue(this.ascii, "wall");
     let leftWall = room.x - 1;
-    if(leftWall >= 0){ this.carveSpace(leftWall, room.y, 1, room.h, wall); }
+    if(leftWall >= 0){ this.carveSpace(leftWall, room.y-1, 1, room.h+2, wall); }
 
     let rightWall = room.x + room.w;
-    if(rightWall < this.grid[0].length){ this.carveSpace(rightWall, room.y, 1, room.h, wall); }
+    if(rightWall < this.grid[0].length){ this.carveSpace(rightWall, room.y-1, 1, room.h+2, wall); }
 
     let topWall = room.y - 1;
-    if(topWall >= 0){ this.carveSpace(room.x, topWall, room.w, 1, wall); }
+    if(topWall >= 0){ this.carveSpace(room.x-1, topWall, room.w+2, 1, wall); }
 
     let bttmWall = room.y + room.h;
-    if(bttmWall >= 0){ this.carveSpace(room.x, bttmWall, room.w, 1, wall); }
+    if(bttmWall >= 0){ this.carveSpace(room.x-1, bttmWall, room.w+2, 1, wall); }
   }
 
   //* step two-three helpers:

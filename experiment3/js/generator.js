@@ -15,20 +15,15 @@ function generateGrid(numCols, numRows) {
 
 // draw tiles based on ASCII values
 function drawGrid(grid, bitmask) {
-    // ok changing this to draw each symbol to its own layer @_@
-    
-    // may need to change the logic of this fcn to work with layers, commenting out for meow:
     let bitVals = (bitmask) ? bitmaskValues(grid) : null;
-    console.log(bitVals)
 
-    // make a layer (graphics object?) for every symbol we find in world[WORLD_TYPE].ascii
+    // make a layer for every symbol we find in world[WORLD_TYPE].ascii
     let myWorld = world[WORLD_TYPE];
     for(let type in myWorld.ascii){
         myWorld.gfx[type] = createGraphics(width, height);
     }
 
     // loop through whole grid, placing tiles only on their respective layers
-
     for(let i = 0; i < grid.length; i++) {
       for(let j = 0; j < grid[i].length; j++) {
         // get feature (i.e. walls, ground, etc.) represented by current ASCII key
@@ -48,7 +43,7 @@ function drawGrid(grid, bitmask) {
         placeTile(gfx, i, j, tile.i, tile.j);
 
         // TODO: LEFT OFF HERE
-        //      > add transitions for dungeon gen
+        //      > IMPROVE BITMASKING
         //      > add idle water anims
         //          >> for user interactions, have animation change in someway on hover
         //      > figure out how to have user interaction in dungeon (minesweeper?)
@@ -71,9 +66,7 @@ function drawGrid(grid, bitmask) {
         //} else { transTile = false; } 
 
         
-        if(trans && myWorld[feature].transition){ 
-            console.log("----");
-            console.log(transTile, myWorld[feature].transition["N"]);
+        if(trans && myWorld[feature].transition && TRANS_DIR[trans]){ 
             for(let d of TRANS_DIR[trans]){
                 let dir = DIR[d];
                 if(!dir) continue;
@@ -87,15 +80,18 @@ function drawGrid(grid, bitmask) {
                     j: myWorld[feature].transition[d].j,
                 }
                 
-                console.log(trans, d, dir, i, j, "...", di, dj)
-                //placeTile(gfx, i, j, transTile.i, transTile.j+14); // DEBUG: puts a yellow square over tile w/ transitions
+                rectMode(CORNER);
+
+                /* DEBUG */
+                //placeTile(gfx, i, j, 0, 18); // DEBUG: puts a yellow square over tile w/ transitions
+                //gfx.text(trans, floor(TILE_SIZE * j), floor(TILE_SIZE * i)+TILE_SIZE);
                 placeTile(gfx, di, dj, transTile.i /*+ (d === "W") ? 1:0*/, transTile.j); 
             }
-            console.log("----")
         }
       }
     }
 }
+
 
 /*
 function getBitVals(grid){
