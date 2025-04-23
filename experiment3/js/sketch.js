@@ -127,10 +127,20 @@ function setup() {
   reseed();
 }
 
+function mouseMoved(){
+  let i = floor(mouseX / TILE_SIZE);
+  let j = floor(mouseY / TILE_SIZE);
+
+  if(i > 0 && i < numCols && j > 0 && j < numRows){
+    let sym = asciiGrid[j][i];
+    if(world[WORLD_TYPE].interact[sym]){
+      world[WORLD_TYPE].interact[sym]();
+    }
+  }
+}
 
 function draw() {
-  randomSeed(seed);
-
+  //randomSeed(seed);
   if(gfx_changed){
     // update grid (sets new layer data)
     drawGrid(asciiGrid, true);

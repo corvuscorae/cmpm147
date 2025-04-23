@@ -25,6 +25,9 @@ const world = {
         "#": "wall",
     },
     animate: [],
+    interact: {
+      //
+    },
     ground: {
       cols: [0, 1, 2, 3],
       rows: [10]
@@ -75,6 +78,14 @@ const world = {
     },
     gfx: {},
     animate: ["~"],
+    interact: {
+      "~": () => {
+        placeTile(world.overworld.gfx["~"], 
+          (floor(mouseY / TILE_SIZE)) + random(-3,3), floor(mouseX / TILE_SIZE) + random(-3,3), 
+          random(world.overworld.water.cols), random(world.overworld.water.rows)
+        );
+      }
+    },
     grass: {
       cols: [0,1,2,3],
       rows: [0],
