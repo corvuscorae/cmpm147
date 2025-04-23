@@ -141,12 +141,6 @@ function mouseMoved(){
 
 function draw() {
   //randomSeed(seed);
-  if(gfx_changed){
-    // update grid (sets new layer data)
-    drawGrid(asciiGrid, true);
-    gfx_changed = false;
-  }
-
   for(let a of world[WORLD_TYPE].animate){
     if(frameCount % 20 === 0){
       let val = world[WORLD_TYPE].ascii[a];
@@ -157,6 +151,12 @@ function draw() {
         animateGridElem(layer, asciiGrid, a);
       }
     }
+  }
+
+  if(gfx_changed){
+    // update grid (sets new layer data)
+    drawGrid(asciiGrid, true);
+    gfx_changed = false;
   }
 
   // draw all layers in order

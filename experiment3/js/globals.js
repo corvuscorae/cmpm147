@@ -74,6 +74,8 @@ const world = {
         "~": "empty",
         "+": "shore",
         "-": "grass",
+        "=": "dark_grass",
+        "*": "snow",
         "^": "forest",
     },
     gfx: {},
@@ -94,6 +96,16 @@ const world = {
         "E":  {i: 4, j: 1},
         "S":  {i: 5, j: 0},
         "W":  {i: 6, j: 1},
+      }
+    },
+    dark_grass: {
+      cols: [0,1,2,3],
+      rows: [1],
+      transition: {                   
+        "N":  {i: 5, j: 8},
+        "E":  {i: 4, j: 7},
+        "S":  {i: 5, j: 6},
+        "W":  {i: 6, j: 7},
       }
     },
     water: {
@@ -119,6 +131,16 @@ const world = {
         "W":  {i: 6, j: 4},
       }
     },
+    snow: {
+      cols: [0,1,2,3],
+      rows: [96/8],
+      transition: {                   
+        "N":  {i: 5, j: 112/8},
+        "E":  {i: 4, j: 104/8},
+        "S":  {i: 5, j: 96/8},
+        "W":  {i: 6, j: 104/8},
+      }
+    },
     empty: {    // water     
       cols: [0, 1, 2, 3],
       rows: [14],
@@ -133,10 +155,8 @@ const world = {
     },
     config: {
       // noise settings
-      MIN_LEAF_SZ: 6,
-      MAX_DEPTH: 4,
-      RM_PADDING: 1,  // leave room for walls
-      MIN_RM_SZ: 6,
+      LEVEL: 100,
+      SCALE: 0.05,           // lower = larger scale
       debug: { }
     }
   }

@@ -15,12 +15,14 @@ class PerlinWorld{
     }
 
     generate() {
-        let level = 100;
-        let scale = 0.08;           // lower = larger scale
-
+        let level = this.config.LEVEL;
+        let scale = this.config.SCALE;          
+        
         let empty = getKeyByValue(this.ascii, "empty"); 
         let grass = getKeyByValue(this.ascii, "grass"); 
+        let dark_grass = getKeyByValue(this.ascii, "dark_grass"); 
         let shore = getKeyByValue(this.ascii, "shore"); 
+        let snow = getKeyByValue(this.ascii, "snow"); 
 
         noiseSeed(seed);            // use global seed
         for (let x = 0; x < this.h; x++) {
@@ -31,16 +33,13 @@ class PerlinWorld{
             
                 let c = level * noise(nx, ny);
             
-                if (c < 50) { 
-                    // leave empty (for water)
-                    this.grid[x][y] = empty;
-                } 
-                else {       
+                this.grid[x][y] = empty;
+                if (c > random(40,50)) {       
                     // put terrain
-                    this.grid[x][y] = grass;
-
-                    //if(c < 100 && c > 90) this.grid[x][y] = "+" // forest
-                    if(c < 60) this. grid[x][y] = shore
+                    this.grid[x][y] = shore;
+                    if(c > random(50,52)) this. grid[x][y] = grass;
+                    if(c > random(60,63)) this. grid[x][y] = dark_grass;
+                    if(c > random(65,70)) this. grid[x][y] = snow;
                 }
             }
         }
