@@ -52,7 +52,7 @@ function setup() {
     rebuildWorld(input.value());
   });
 
-  createP("WASD keys scroll. Clicking changes tiles.").parent("canvas-container");
+  createP("WASD keys scroll. Dragging spins web.").parent("canvas-container");
 }
 
 function rebuildWorld(key) {
@@ -81,7 +81,6 @@ function p3_tileClicked(i, j) {
 }
 
 function pointsToRegion(numPoints, xRange, yRange){
-        console.log(xRange, yRange)
         let result = [];
     for(let i = 0; i < numPoints; i++){
         let px = random(xRange[0], xRange[1]);
