@@ -81,7 +81,8 @@ function p3_tileClicked(i, j) {
 }
 
 function pointsToRegion(numPoints, xRange, yRange){
-    let result = [];
+        console.log(xRange, yRange)
+        let result = [];
     for(let i = 0; i < numPoints; i++){
         let px = random(xRange[0], xRange[1]);
         let py = random(yRange[0], yRange[1]);
@@ -92,95 +93,102 @@ function pointsToRegion(numPoints, xRange, yRange){
     return result;
 }
 
-function draw() {
-  if (keyIsPressed === true) {
-    if (key === "w") {
-        clear();
+function mouseMoved(){
+    
+}
 
-        //let newPoints = generatePoints(worldScroll[0],worldScroll[1]);
-        updatePoints(points, 0, scrollFactor);
-        
-        if(mouseIsPressed === true){
-            // push a row of points to the top of sceen
-            let newPoints = pointsToRegion(1, [mouseX - 50, mouseX + 50], [mouseY - 50, mouseX + 50]); 
-            points = points.concat(newPoints);
-        }
-
-        worldScroll[1] += scrollFactor;
-        polygons = generateVoronoi();
-        renderPolygons(polygons); 
-        renderPoints();
-
-    } 
-    if (key === "s") {
-      clear();
-
-        //let newPoints = generatePoints(worldScroll[0],worldScroll[1]);
-        updatePoints(points, 0, -scrollFactor);
-
-        if(mouseIsPressed === true){
-            // push a row of points to the bottom of sceen
-            let newPoints = pointsToRegion(1, [mouseX - 50, mouseX + 50], [mouseY - 50, mouseX + 50]); 
-            points = points.concat(newPoints);
-        }
-
-        worldScroll[1] -= scrollFactor;
-        polygons = generateVoronoi();
-        renderPolygons(polygons); 
-        renderPoints();
-    } 
-    if (key === "a") {
-        clear();    
-
-        //let newPoints = generatePoints(worldScroll[0],worldScroll[1]);
-        updatePoints(points, scrollFactor, 0);
-
-        if(mouseIsPressed === true){
-            // push a row of points to the left of sceen
-            let newPoints = pointsToRegion(1, [mouseX - 50, mouseX + 50], [mouseY - 50, mouseX + 50]); 
-            points = points.concat(newPoints);
-        }
-
-        //points = points.concat(newPoints);
-
-        worldScroll[0] += scrollFactor;
-        polygons = generateVoronoi();
-        renderPolygons(polygons); 
-        renderPoints();
-    }    
-    if (key === "d") {
-        clear();
-        
-        //let newPoints = generatePoints(worldScroll[0],worldScroll[1]);
-        updatePoints(points, -scrollFactor, 0);
-
-        if(mouseIsPressed === true){
-            // push a row of points to the left of sceen
-            let newPoints = pointsToRegion(1, [mouseX - 50, mouseX + 50], [mouseY - 50, mouseX + 50]); 
-            points = points.concat(newPoints);
-        }
-
-        //points = points.concat(newPoints);
-        
-        worldScroll[0] -= scrollFactor;
+function mouseDragged(){
+    if(mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height){
+        let newPoints = pointsToRegion(1, 
+            [mouseX - random(10,15), mouseX + random(10,15)], 
+            [mouseY - random(10,15), mouseY + random(10,15)]
+        ); 
+        points = points.concat(newPoints);
         polygons = generateVoronoi();
         renderPolygons(polygons); 
         renderPoints();
     }
-  }  
-//  console.log(worldScroll)
-  for(let polygon of polygons){
-    //console.log(polygon, window.d3.polygonArea(polygon));
-  }
-  if(polygons.length < 10){ 
-    let newPoints = generatePoints(worldScroll[0],worldScroll[1]);
-    points = points.concat(newPoints);
-    polygons = generateVoronoi();
-    renderPolygons(polygons);
-    renderPoints();
-  }
 }
 
+function draw() {
+    
+    if (keyIsPressed === true) {
+        if (key === "w") {
+            clear();
+
+            //let newPoints = generatePoints(worldScroll[0],worldScroll[1]);
+            updatePoints(points, 0, scrollFactor);
+
+            //if(mouseIsPressed === true){
+            //    // push a row of points to the top of sceen
+            //    let newPoints = pointsToRegion(1, [mouseX - 50, mouseX + 50], [mouseY - 50, mouseX + 50]); 
+            //    points = points.concat(newPoints);
+            //}
+
+            worldScroll[1] += scrollFactor;
+            polygons = generateVoronoi();
+            renderPolygons(polygons); 
+            renderPoints();
+
+        } 
+        if (key === "s") {
+          clear();
+
+            //let newPoints = generatePoints(worldScroll[0],worldScroll[1]);
+            updatePoints(points, 0, -scrollFactor);
+
+            //if(mouseIsPressed === true){
+            //    // push a row of points to the bottom of sceen
+            //    let newPoints = pointsToRegion(1, [mouseX - 50, mouseX + 50], [mouseY - 50, mouseX + 50]); 
+            //    points = points.concat(newPoints);
+            //}
+
+            worldScroll[1] -= scrollFactor;
+            polygons = generateVoronoi();
+            renderPolygons(polygons); 
+            renderPoints();
+        } 
+        if (key === "a") {
+            clear();    
+
+            //let newPoints = generatePoints(worldScroll[0],worldScroll[1]);
+            updatePoints(points, scrollFactor, 0);
+
+            //if(mouseIsPressed === true){
+            //    // push a row of points to the left of sceen
+            //    let newPoints = pointsToRegion(1, [mouseX - 50, mouseX + 50], [mouseY - 50, mouseX + 50]); 
+            //    points = points.concat(newPoints);
+            //}
+
+            //points = points.concat(newPoints);
+
+            worldScroll[0] += scrollFactor;
+            polygons = generateVoronoi();
+            renderPolygons(polygons); 
+            renderPoints();
+        }    
+        if (key === "d") {
+            clear();
+
+            //let newPoints = generatePoints(worldScroll[0],worldScroll[1]);
+            updatePoints(points, -scrollFactor, 0);
+
+            //if(mouseIsPressed === true){
+            //    // push a row of points to the left of sceen
+            //    let newPoints = pointsToRegion(1, [mouseX - 50, mouseX + 50], [mouseY - 50, mouseX + 50]); 
+            //    points = points.concat(newPoints);
+            //}
+
+            //points = points.concat(newPoints);
+
+            worldScroll[0] -= scrollFactor;
+            polygons = generateVoronoi();
+            renderPolygons(polygons); 
+            renderPoints();
+        }
+    }  
+}
+/*
 function mouseClicked(){
   console.log(mouseX, mouseY)
   clear();
@@ -189,7 +197,7 @@ function mouseClicked(){
   renderPolygons(polygons);
   renderPoints();
 }
-
+*/
 function generatePoints(xOffset = 0, yOffset = 0){
   let result = [];
   
