@@ -122,8 +122,9 @@ let ground = new NoiseSettings(
   Math.floor(Math.random() * 2556), 500, 0.001, {squish: 0.15},
   (gfx, c, x, y, maxY) => {
     let strokeColor = pickGroundColor(c);
+    gfx.strokeWeight(3);
     gfx.stroke(strokeColor);
-
+    gfx.fill(strokeColor);
     // draw stroke, starting from mid screen (horizon) 
     // and "upside down" (h - y) so perspective effect compresses toward horizon
     gfx.point(x, maxY/2 + maxY-y);
@@ -168,8 +169,8 @@ function setup() {
   groundGFX = createGraphics(W, H);
   bufferGFX = createGraphics(W, H); // helper for ground refresh
 
-  init();
-  
+  regenerate();
+
   $("#reimagine").click(() => regenerate());
 
   // TODO: fix resizing. currently incompatible with scrolling effect
@@ -189,16 +190,17 @@ function draw() {
     if(lastDir === FORWARD) groundScroll -= W;
     lastDir = BACK;
   }
-  else if (keyIsDown(RIGHT_ARROW)) {
+  else if (keyIsDown(RIGHT_ARROW) || SPEED === 0) { // auto scroll forward at start of scene
     SPEED = 0.5;
-    if(lastDir === BACK) groundScroll += W;
+    if(lastDir === BACK || lastDir === 0) groundScroll += W;
     lastDir = FORWARD;
   }
-  else { SPEED = 0; }
+  //else { SPEED = 0; }
 
   //if(frameCount % 10 === 1){ console.log(W, H); }
   // put sky as background
   image(skyGFX, 0, 0);  
+ 
   // generate hills
   perlinHills(H/4,    COLOR.hillsFar,   hills.far);
   perlinHills(H/3.5,  COLOR.hillsMid,   hills.mid);
@@ -220,14 +222,14 @@ function draw() {
   // only update ground when scroll factor is a whole num
   if(SPEED != 0 && groundScroll % 1 === 0){ 
     let startX = (SPEED > 0) ? 1 : 0;
-    let drawX = (SPEED > 0) ? W - 1 : 0;
     let destX = (SPEED > 0) ? 0 : 1;
+    let drawX = (SPEED > 0) ? W : 0;
     
     // copy current ground into a buffer, leaving out the leftmost column,
     // which will shift ground leftward one px when we copy it back to screen
     bufferGFX.copy(groundGFX, 
-      startX, 0, W-1, H, 
-      destX, 0, W-1, H
+      startX, 0, W, H, 
+      destX, 0, W, H
     );
     // clear ground (this will preserve transparency on update)
     groundGFX.clear();
@@ -247,17 +249,11 @@ function draw() {
     drawPerlinColumn(groundGFX, groundScroll, drawX, H, ground);
   }
 
-  // my incredibly cursed solution to unwanted opacity loss
   image(groundGFX, 0, 0);
-  image(groundGFX, 0, 0);
-  image(groundGFX, 0, 0);
-  image(groundGFX, 0, 0);
-  image(groundGFX, 0, 0);
-  // TODO: ^fumigate
 
   // update ground scroll amt (helps us track perlin values for ground generation)
   groundScroll+=SPEED;
-  }
+}
 
 // 1D perlin function to generate hills
 function perlinHills(elevation, color, ns, squishReflect){
@@ -445,7 +441,8 @@ function regenerate() {
   skyGFX.clear();
   
   // reset groundScroll (tracking perlin x-values)
-  groundScroll = W;
+  groundScroll = 0;
+  lastDir = 0;
 
   // random seeds
   ground.seed = random(0, 2556);
