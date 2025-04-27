@@ -179,6 +179,10 @@ function setup() {
   resizeScreen();
 }
 
+// TODO: LEFT OFF HERE
+//  > know bugs: trees are randomly places so when direction is changes, tree lines change. update to place trees based on noice
+//  > need to incorporate hashing
+//  > weird water opacity issue is persisting >:()
 const BACK = -1;
 const FORWARD = 1;
 let lastDir = 0;
@@ -211,6 +215,12 @@ function draw() {
     if (treeline[i].x < -treeline[i].baseWidth) { // as soon as tree is offscreen, yeet it
       let tree = treeline.splice(i, 1)[0];                    // yeet
       tree.x = W + random(treeSpacing.min, treeSpacing.max);  // regen
+      tree.color = random(COLOR.trees);                       // set new color
+      treeline.push(tree);                                    // add it to treeline
+    }
+    if (treeline[i].x > W+treeline[i].baseWidth) { // as soon as tree is offscreen, yeet it
+      let tree = treeline.splice(i, 1)[0];                    // yeet
+      tree.x = 0 - random(treeSpacing.min, treeSpacing.max);  // regen
       tree.color = random(COLOR.trees);                       // set new color
       treeline.push(tree);                                    // add it to treeline
     }
