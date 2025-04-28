@@ -109,7 +109,7 @@ let sky = new NoiseSettings(
     gfx.stroke(strokeColor);
 
     // reflect at h/2 (midpoint, aka horizon)
-    gfx.point(x, maxY*2 - y);   // bottom half
+    //gfx.point(x, maxY*2 - y);   // bottom half
     gfx.point(x, y);            // top half
   }
 )
@@ -142,8 +142,8 @@ let loop_dir = 1;
 function setup() {
   colorMode(RGB);
   timeColor = {
-    morning: color(240,56,42,100),
-    evening: color(20,78,190,100)
+    morning: color(252,186,3,50),
+    evening: color(20,78,190,50)
   }
   currentColor = timeColor.morning;
 
@@ -198,7 +198,8 @@ function setup() {
 }
 
 // TODO: LEFT OFF HERE
-//  > know bugs: trees are randomly places so when direction is changes, tree lines change. update to place trees based on noice
+//  know bugs: 
+//  > trees are randomly places so when direction is changes, tree lines change. update to place trees based on noice
 //  > weird water opacity issue is persisting >:()
 const BACK = -1;
 const FORWARD = 1;
@@ -216,10 +217,13 @@ function draw() {
   }
   //else { SPEED = 0; }
 
-  //if(frameCount % 10 === 1){ console.log(W, H); }
   // put sky as background
+  push();
   image(skyGFX, 0, 0);  
- 
+  scale(1, -1);
+  image(skyGFX, 0, -height);      
+  pop();
+  
   // generate hills
   perlinHills(H/4,    COLOR.hillsFar,   hills.far);
   perlinHills(H/3.5,  COLOR.hillsMid,   hills.mid);
