@@ -132,10 +132,21 @@ let ground = new NoiseSettings(
 )
 
 let worldSeed;
+let timeColor;
+let currentColor;
+let n = 0;
+let color_d = 0.005;
+let loop_dir = 1;
 
 // setup() function is called once when the program starts
 function setup() {
   colorMode(RGB);
+  timeColor = {
+    morning: color(240,56,42,100),
+    evening: color(20,78,190,100)
+  }
+  currentColor = timeColor.morning;
+
   // pallete generated here: https://mycolor.space/?hex=%236A994E&sub=1 
   COLOR = {
     ground:{
@@ -264,6 +275,21 @@ function draw() {
   }
 
   image(groundGFX, 0, 0);
+
+  // set color/time
+  push();
+  currentColor = lerpColor(timeColor.morning, timeColor.evening, n);
+  fill(currentColor);
+  noStroke();
+  rect(0,0,W,H);
+
+  if(n === 1){ loop_dir = -1*SPEED; }
+  if(n === 0){ loop_dir = SPEED; }
+  
+  n += color_d * SPEED/2 * loop_dir;
+  n = constrain(n, 0, 1);
+
+  pop();  
 
   // update ground scroll amt (helps us track perlin values for ground generation)
   groundScroll+=SPEED;
