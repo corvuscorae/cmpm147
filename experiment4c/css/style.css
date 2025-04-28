@@ -25,3 +25,10 @@ body {
     background-color:coral;
     display: inline-block; 
 }
+
+#input {
+    display: flex;
+    align-items: center; /* vertical align */
+    gap: 10px; /* space between input and button */
+  }
+  

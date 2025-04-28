@@ -131,6 +131,8 @@ let ground = new NoiseSettings(
   }
 )
 
+let worldSeed;
+
 // setup() function is called once when the program starts
 function setup() {
   colorMode(RGB);
@@ -171,7 +173,12 @@ function setup() {
 
   regenerate();
 
-  $("#reimagine").click(() => regenerate());
+  let str_input = createInput("xyzzy");
+  str_input.parent("input");
+
+  let reimagine = createButton("reimagine");
+  reimagine.parent("input");
+  reimagine.mousePressed(() => regenerate(str_input.value()));
 
   // TODO: fix resizing. currently incompatible with scrolling effect
   // resize canvas if the page is resized
@@ -181,14 +188,11 @@ function setup() {
 
 // TODO: LEFT OFF HERE
 //  > know bugs: trees are randomly places so when direction is changes, tree lines change. update to place trees based on noice
-//  > need to incorporate hashing
 //  > weird water opacity issue is persisting >:()
 const BACK = -1;
 const FORWARD = 1;
 let lastDir = 0;
 function draw() { 
-  // TODO: LEFT OFF HERE 
-  // fix hills glitch + fix weird scrolling 
   if (keyIsDown(LEFT_ARROW)) {
     SPEED = -0.5;
     if(lastDir === FORWARD) groundScroll -= W;
@@ -441,7 +445,7 @@ function init(startX = 0){
 }
 
 // re-roll new noise vals and re-init generators
-function regenerate() {
+function regenerate(hash = null) {
   noLoop();   // pause draw() on regen
 
   // clear all canvases
@@ -453,12 +457,20 @@ function regenerate() {
   // reset groundScroll (tracking perlin x-values)
   groundScroll = 0;
   lastDir = 0;
+  SPEED = 0;
 
   // random seeds
-  ground.seed = random(0, 2556);
-  sky.seed = random(0, 2556);
+  if(hash){
+    worldSeed = XXH.h32(hash, 0);
+    noiseSeed(worldSeed);
+    randomSeed(worldSeed);
+  }
+  ground.seed = (hash) ? worldSeed : random(0, 2556);
+  sky.seed = (hash) ? worldSeed / 2 : random(0, 2556);
+  let i = 0;
   for(let hill in hills){
-    hills[hill].seed = random(0, 2556);
+    hills[hill].seed = (hash) ? (worldSeed / (3+i)) : random(0, 2556);
+    i++;
   }
 
   // rest treeline

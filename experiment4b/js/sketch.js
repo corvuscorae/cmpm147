@@ -65,7 +65,6 @@ function rebuildWorld(key) {
   polygons = generateVoronoi();
   renderPolygons(polygons);
   renderPoints();
-
 }
 
 function p3_tileWidth() {
