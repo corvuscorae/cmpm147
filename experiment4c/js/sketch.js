@@ -138,6 +138,17 @@ let n = 0;
 let color_d = 0.005;
 let loop_dir = 1;
 
+let ground_level_slider;
+let ground_scale_slider;
+let sky_level_slider;
+let sky_scale_slider;
+let closeHill_level_slider;
+let closeHill_scale_slider;
+let midHill_level_slider;
+let midHill_scale_slider;
+let farHill_level_slider;
+let farHill_scale_slider;
+
 // setup() function is called once when the program starts
 function setup() {
   colorMode(RGB);
@@ -149,27 +160,27 @@ function setup() {
 
   // pallete generated here: https://mycolor.space/?hex=%236A994E&sub=1 
   COLOR = {
-    ground:{
-      green_grass: color("#4c7b32"),
-      greener_grass: color("#5f8f46"),
-      greenest_grass: color("#74a458"),
-      dry_grass: color("#afa871"),
-      muddy_grass: color("#97905c"),
-      mud: color("#7e7846"),
-      dark_water: color("#47caca"),
-      water: color("#65e5e5"),
-      light_water: color("#83ffff"),
+    ground: {
+      green_grass:    color(76, 123, 50),    // #4c7b32
+      greener_grass:  color(95, 143, 70),    // #5f8f46
+      greenest_grass: color(116, 164, 88),   // #74a458
+      dry_grass:      color(175, 168, 113),  // #afa871
+      muddy_grass:    color(151, 144, 92),   // #97905c
+      mud:            color(126, 120, 70),   // #7e7846
+      dark_water:     color(71, 202, 202),   // #47caca
+      water:          color(101, 229, 229),  // #65e5e5
+      light_water:    color(131, 255, 255),  // #83ffff
     },
     sky: {
-      clear: color("#00c2ff"),
-      clearish: color("#4fcefa"),
-      mid: color("#65d7f1"),
-      cloudclear: color("#fbf6ec"),
-      cloud: color("#f6edd9"),
+      clear:          color(0, 194, 255),    // #00c2ff
+      clearish:       color(79, 206, 250),   // #4fcefa
+      mid:            color(101, 215, 241),  // #65d7f1
+      cloudclear:     color(251, 246, 236),  // #fbf6ec
+      cloud:          color(246, 237, 217),  // #f6edd9
     },
-    hillsFar: color("#00947c"),
-    hillsMid: color("#0bab67"),
-    hillsNear: color("#6fbe43"),
+    hillsFar:         color(0, 148, 124),     // #00947c
+    hillsMid:         color(11, 171, 103),    // #0bab67
+    hillsNear:        color(111, 190, 67),    // #6fbe43
     trees: [color("#47981b"), color("#1a7300"), color("#2c8000")],
   }
 
@@ -182,6 +193,46 @@ function setup() {
   groundGFX = createGraphics(W, H);
   bufferGFX = createGraphics(W, H); // helper for ground refresh
 
+  // sliders to edit noise settings
+  createP("Noise Settings").parent("sliders");
+
+  // WETLANDS
+  createP("Wetlands:").parent("sliders");
+  createSpan("Noise level").parent("sliders");
+  ground_level_slider = createSlider(50, 600, 500, 0).parent("sliders"); 
+  createSpan("Noise scale").parent("sliders");
+  ground_scale_slider = createSlider(0.0001, 0.01, 0.001, 0).parent("sliders");
+
+  // SKY
+  createP("Sky:").parent("sliders");
+  createSpan("Noise level").parent("sliders");
+  sky_level_slider = createSlider(50, 600, 400, 0).parent("sliders"); 
+  createSpan("Noise scale").parent("sliders");
+  sky_scale_slider = createSlider(0.0001, 0.01, 0.009, 0).parent("sliders");
+
+  // HILLS
+  createP("Hills:").parent("sliders");
+  // close
+  createSpan("Close range..... ").parent("sliders");
+  createSpan("Noise level").parent("sliders");
+  closeHill_level_slider = createSlider(10, 200, 100, 1).parent("sliders"); 
+  createSpan("Noise scale").parent("sliders");
+  closeHill_scale_slider = createSlider(0.0001, 0.05, 0.009, 0).parent("sliders");
+  // mid
+  createP("").parent("sliders");
+  createSpan("Mid range..... ").parent("sliders");
+  createSpan("Noise level").parent("sliders");
+  midHill_level_slider = createSlider(10, 200, 100, 1).parent("sliders"); 
+  createSpan("Noise scale").parent("sliders");
+  midHill_scale_slider = createSlider(0.0001, 0.05, 0.007, 0).parent("sliders");
+  // far
+  createP("").parent("sliders");
+  createSpan("Far range..... ").parent("sliders");
+  createSpan("Noise level").parent("sliders");
+  farHill_level_slider = createSlider(10, 200, 90, 1).parent("sliders"); 
+  createSpan("Noise scale").parent("sliders");
+  farHill_scale_slider = createSlider(0.0001, 0.05, 0.007, 0).parent("sliders");
+
   regenerate();
 
   let str_input = createInput("xyzzy");
@@ -193,8 +244,8 @@ function setup() {
 
   // TODO: fix resizing. currently incompatible with scrolling effect
   // resize canvas if the page is resized
-  $(window).resize(function() { resizeScreen(); });
-  resizeScreen();
+  //$(window).resize(function() { resizeScreen(); });
+  //resizeScreen();
 }
 
 // TODO: LEFT OFF HERE
@@ -205,6 +256,77 @@ const BACK = -1;
 const FORWARD = 1;
 let lastDir = 0;
 function draw() { 
+  // update ground noise setting based on sliders
+  // TODO: try redrawing whole screen if changed
+  //ground.level = ground_level_slider.value();
+  //ground.scale = ground_scale_slider.value();
+
+  if(ground_level_slider.value() != ground.level){
+    console.log("ground noise level changed");
+    ground.level = ground_level_slider.value();
+
+    // redraw ground
+    const range = (SPEED > 0) ? 
+    { min: groundScroll - W, max: groundScroll} :
+    { min: groundScroll, max: groundScroll + W} 
+
+    groundGFX.clear();
+    let screenX = 0;
+    for (let noiseX = range.min; noiseX < range.max; noiseX++) {
+      drawPerlinColumn(groundGFX, noiseX, screenX, H, ground);
+      screenX++;
+    }
+  }
+  if(ground_scale_slider.value() != ground.scale){
+    console.log("ground noise scale changed");
+    ground.scale = ground_scale_slider.value();
+
+    // redraw ground
+    const range = (SPEED > 0) ? 
+    { min: groundScroll - W, max: groundScroll} :
+    { min: groundScroll, max: groundScroll + W} 
+
+    groundGFX.clear();
+    let screenX = 0;
+    for (let noiseX = range.min; noiseX < range.max; noiseX++) {
+      drawPerlinColumn(groundGFX, noiseX, screenX, H, ground);
+      screenX++;
+    }
+  }
+  
+  // update sky level settings if sliders change
+  if(sky_level_slider.value() != sky.level){
+    console.log("sky noise level changed");
+    sky.level = sky_level_slider.value();
+
+    // redraw sky
+    skyGFX.clear();
+    for (let x = 0; x < W; x++) {
+      drawPerlinColumn(skyGFX, x, x, H/2, sky);
+    }
+  }
+  if(sky_scale_slider.value() != sky.scale){
+    console.log("sky noise scale changed");
+    sky.scale = sky_scale_slider.value();
+
+    // redraw sky
+    skyGFX.clear();
+    for (let x = 0; x < W; x++) {  const range = (SPEED > 0) ? 
+    { min: groundScroll - W, max: groundScroll} :
+    { min: groundScroll, max: groundScroll + W} 
+      drawPerlinColumn(skyGFX, x, x, H/2, sky);
+    }
+  }
+
+  // update hill noise settings based on sliders
+  hills.near.level  = closeHill_level_slider.value();
+  hills.near.scale  = closeHill_scale_slider.value();
+  hills.mid.level   = midHill_level_slider.value();
+  hills.mid.scale   = midHill_scale_slider.value();
+  hills.far.level   = farHill_level_slider.value();
+  hills.far.scale   = farHill_scale_slider.value();
+
+
   if (keyIsDown(LEFT_ARROW)) {
     SPEED = -0.5;
     if(lastDir === FORWARD) groundScroll -= W;
@@ -223,7 +345,7 @@ function draw() {
   scale(1, -1);
   image(skyGFX, 0, -height);      
   pop();
-  
+
   // generate hills
   perlinHills(H/4,    COLOR.hillsFar,   hills.far);
   perlinHills(H/3.5,  COLOR.hillsMid,   hills.mid);
@@ -290,14 +412,39 @@ function draw() {
   if(n === 1){ loop_dir = -1*SPEED; }
   if(n === 0){ loop_dir = SPEED; }
   
-  n += color_d * SPEED/2 * loop_dir;
+  n += color_d * SPEED/4 * loop_dir;
   n = constrain(n, 0, 1);
 
   pop();  
 
   // update ground scroll amt (helps us track perlin values for ground generation)
   groundScroll+=SPEED;
+  //bord();
 }
+
+/*
+class Flock {
+  constructor(x, y){
+    this.x = x;
+    this.y = y;
+  }
+}
+
+let flocks = [];
+function bord(){
+  const range = (SPEED > 0) ? 
+    { min: groundScroll - W, max: groundScroll} :
+    { min: groundScroll, max: groundScroll + W} 
+
+  let nx = noise((SPEED > 0) ? range.max : range.min);
+  if(nx > 0.88){ 
+    flocks.push(new Flock((SPEED > 0) ? range.max : range.min, -1));
+    
+    console.log(nx, range.max, flocks);
+  }
+
+}
+*/
 
 // 1D perlin function to generate hills
 function perlinHills(elevation, color, ns, squishReflect){
@@ -318,7 +465,7 @@ function perlinHills(elevation, color, ns, squishReflect){
     if (squishReflect) {
       // adjust y to be upside down and squished, for reflections
       let hillHeight = y - H/2;
-      y = H/2 - hillHeight * squishReflect;
+      y = (H/2 - hillHeight * squishReflect);
     }
 
     // start shape
@@ -396,11 +543,11 @@ function pickGroundColor(c){
   let strokeAlpha = 255;
   if (c > 180) { // VEGETATION
     //if(c > random([220, 230, 240, 250])){ strokeColor = COLOR.ground.bushes; }
-    if(c > 250){ strokeColor = COLOR.ground.greener_grass; }
-    else if(c > 220){ strokeColor = COLOR.ground.greenest_grass; }
-    else if(c > 210){ strokeColor = COLOR.ground.greener_grass; }
-    else if(c > 200){ strokeColor = COLOR.ground.green_grass; }
-    else if(c > 190){ strokeColor = COLOR.ground.muddy_grass; }
+    if(c > 250)     { strokeColor = COLOR.ground.greener_grass;   }
+    else if(c > 220){ strokeColor = COLOR.ground.greenest_grass;  }
+    else if(c > 210){ strokeColor = COLOR.ground.greener_grass;   }
+    else if(c > 200){ strokeColor = COLOR.ground.green_grass;     }
+    else if(c > 190){ strokeColor = COLOR.ground.muddy_grass;     }
     else { strokeColor = COLOR.ground.mud; } 
 
     // detailing
@@ -510,6 +657,7 @@ function regenerate(hash = null) {
   loop();   // restart draw()
 }
 
+/*
 // RESIZE
 // TODO: fix bugs
 //        - slow reload
@@ -544,3 +692,4 @@ function resizeScreen() {
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
   //redrawCanvas(); // Redraw everything based on new size
 }
+*/
