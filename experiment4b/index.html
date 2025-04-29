@@ -51,19 +51,22 @@
 
 			<div class="minor-section">
 				<h2>Description</h2>
-				<p>What are you trying to acomplish with this experiment?</p>
+				<p>I wanted to figure out how to generate a voronoi diagram, so I started with that in mind and adjusted my photo inspiration to come from the results of my expermentation.</p>
 				<p><li><a href="https://docs.google.com/document/d/1jJyUUgu7i7M-MbGBUqWZAs4XqSVeu5V41z__K3wWoyk/edit?usp=sharing">Notes</a></li></p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Technical</h2>
-				<p>Describe in detail what you did technically and how it works?</p>
+				<p>I used d3-delaunay to generate a voronoi diagram, then did some minor Lloyd relaxation to normalized the polygons. To add polygons on scroll/click/drag, I just add to a global points array and regenerate my polygons with the array. </p>
+				<p>I was inspired by<li><a href="http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/">this blog post</a></li> to try this, and I followed some of the logic in the first step in order to achieve this sketch.</p>
+				<p><li><a href="https://www.npmjs.com/package/d3-delaunay">d3-delaunay</a></li> </p>
 			</div>
-
+			<!--
 			<div class="minor-section">
 				<h2>Reflection</h2>
 				<p>Each person that worked on the code should reflect on the process, the difficulties, and the successes of the experiment.</p>
 			</div>
+			-->
 
 		</section>
 		<nav id="links" class="minor-section">
