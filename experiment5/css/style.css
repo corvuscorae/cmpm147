@@ -1,0 +1,38 @@
+/* style.css */
+
+/* Set the canvas element to be the full size of the container */
+canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* Center the canvas element on the page */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#canvas-container {
+    width: 100%;
+    height: 600px;
+}
+
+.widthSet {
+    max-width: 200px;
+}
+
+.evo {
+    display: inline-block;
+    margin: 10px;
+}
+
+.evo-best {
+    border: 6px;
+    border-style: solid;
+    border-color: green;
+}
+
+.evo-best-text {
+    color: green;
+}
