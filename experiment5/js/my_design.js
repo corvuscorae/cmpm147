@@ -5,22 +5,24 @@ function getInspirations() {
     return [
       {
         name: "Aurora Jupiter",
-        assetUrl:
-          "https://cdn.glitch.global/c3de7a6d-dbec-422f-8845-c1a3fd72fc7f/Aurora%20Jupiter.jpg?v=1746033909095",
+        assetUrl: "../../img/jupiter.jpg",
         credit: "Hubble Space Telescope, 2016",
       },
       {
         name: "Mars",
-        assetUrl:
-          "https://cdn.glitch.global/c3de7a6d-dbec-422f-8845-c1a3fd72fc7f/Mars.png?v=1746034471345",
-        credit: "Hubble Space Telescope, 2007",
+        assetUrl: "../../img/mars.png",
+        credit: "NASA/JPL Viking Mars Mosaic", // TODO: get year
       },
       {
         name: "Pluto",
-        assetUrl:
-          "https://cdn.glitch.global/c3de7a6d-dbec-422f-8845-c1a3fd72fc7f/pluto.jpg?v=1746034816184",
+        assetUrl: "../../img/pluto.jpg",
         credit: "NASA New Horizons, July 2015",
       },
+      {
+        name: "Not moon",
+        assetUrl: "../../img/DeathStar.jpg",
+        credit: "https://starwars.fandom.com/wiki/DS-2_Death_Star_II_Mobile_Battle_Station" // TODO: find OG credit
+      }
     ];
   }
   
@@ -30,15 +32,17 @@ function getInspirations() {
     resizeCanvas(inspiration.image.width * SCALE, inspiration.image.height * SCALE);
   
     let design = {
-      bg: 128,
+      bg: 0,
       fg: [],
     };
-  
-    for (let i = 0; i < 1000; i++) {
+    
+    for (let i = 0; i < 3000; i++) {
       const x = random(1, width);
       const y = random(1, height);
-      const w = random(1, width  / 10);
-      const h = random(1, height / 10);
+
+      const sizeDiv = (i < 100) ? 4 : 10;   // 100 larger shapes, the rest smaller
+      const w = random(1, width  / sizeDiv);
+      const h = random(1, height / sizeDiv);
       design.fg.push({
         x: x,
         y: y,
@@ -96,10 +100,10 @@ function getInspirations() {
   }
   
   function renderDesign(design, inspiration) {
-    background(design.bg);
+    background(0);
     noStroke();
     for (let box of design.fg) {
-      fill(box.fill.r, box.fill.g, box.fill.b, floor(random(128,255)));
+      fill(box.fill.r, box.fill.g, box.fill.b, floor(random(128,255))); // alpha 
       
       // coinflip to decide which shape to draw
       const coin = random();
@@ -117,7 +121,7 @@ function getInspirations() {
       box.w = mut(box.w, 1, width / 2, rate);
       box.h = mut(box.h, 1, height / 2, rate);
       
-      if(frameCount % 20 * rate === 0 ||
+      if(frameCount % 20 === 0 ||
         box.fill.r === null || box.fill.g === null || box.fill.b === null
       ){
         box.fill = getAvgColor(
