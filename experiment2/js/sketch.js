@@ -77,7 +77,7 @@ class Tree {
 /* exported setup, draw */
 // globals
 let COLOR; // defined in setup()
-let SPEED = 0.5;
+let SPEED = 0.25;
 
 // tree generation stuff
 let treeline = [];
@@ -100,7 +100,7 @@ let sky = new NoiseSettings(
     gfx.stroke(strokeColor);
 
     // reflect at h/2 (midpoint, aka horizon)
-    gfx.point(x, maxY*2 - y);   // bottom half
+    //gfx.point(x, maxY*2 - y);   // bottom half
     gfx.point(x, y);            // top half
   }
 )
@@ -113,8 +113,9 @@ let ground = new NoiseSettings(
   Math.floor(Math.random() * 2556), 500, 0.001, {squish: 0.15},
   (gfx, c, x, y, maxY) => {
     let strokeColor = pickGroundColor(c);
+    gfx.strokeWeight(3);
     gfx.stroke(strokeColor);
-
+    //gfx.fill(strokeColor);
     // draw stroke, starting from mid screen (horizon) 
     // and "upside down" (h - y) so perspective effect compresses toward horizon
     gfx.point(x, maxY/2 + maxY-y);
@@ -126,27 +127,27 @@ function setup() {
   colorMode(RGB);
   // pallete generated here: https://mycolor.space/?hex=%236A994E&sub=1 
   COLOR = {
-    ground:{
-      green_grass: color("#4c7b32"),
-      greener_grass: color("#5f8f46"),
-      greenest_grass: color("#74a458"),
-      dry_grass: color("#afa871"),
-      muddy_grass: color("#97905c"),
-      mud: color("#7e7846"),
-      dark_water: color("#47caca"),
-      water: color("#65e5e5"),
-      light_water: color("#83ffff"),
+    ground: {
+      green_grass:    color(76, 123, 50),    // #4c7b32
+      greener_grass:  color(95, 143, 70),    // #5f8f46
+      greenest_grass: color(116, 164, 88),   // #74a458
+      dry_grass:      color(175, 168, 113),  // #afa871
+      muddy_grass:    color(151, 144, 92),   // #97905c
+      mud:            color(126, 120, 70),   // #7e7846
+      dark_water:     color(71, 202, 202),   // #47caca
+      water:          color(101, 229, 229),  // #65e5e5
+      light_water:    color(131, 255, 255),  // #83ffff
     },
     sky: {
-      clear: color("#00c2ff"),
-      clearish: color("#4fcefa"),
-      mid: color("#65d7f1"),
-      cloudclear: color("#fbf6ec"),
-      cloud: color("#f6edd9"),
+      clear:          color(0, 194, 255),    // #00c2ff
+      clearish:       color(79, 206, 250),   // #4fcefa
+      mid:            color(101, 215, 241),  // #65d7f1
+      cloudclear:     color(251, 246, 236),  // #fbf6ec
+      cloud:          color(246, 237, 217),  // #f6edd9
     },
-    hillsFar: color("#00947c"),
-    hillsMid: color("#0bab67"),
-    hillsNear: color("#6fbe43"),
+    hillsFar:         color(0, 148, 124),     // #00947c
+    hillsMid:         color(11, 171, 103),    // #0bab67
+    hillsNear:        color(111, 190, 67),    // #6fbe43
     trees: [color("#47981b"), color("#1a7300"), color("#2c8000")],
   }
 
@@ -165,21 +166,24 @@ function setup() {
 
   // TODO: fix resizing. currently incompatible with scrolling effect
   // resize canvas if the page is resized
-  $(window).resize(function() { resizeScreen(); });
-  resizeScreen();
+  //$(window).resize(function() { resizeScreen(); });
+  //resizeScreen();
 }
 
 function draw() {  
   //if(frameCount % 10 === 1){ console.log(W, H); }
   // put sky as background
+  push();
   image(skyGFX, 0, 0);  
+  scale(1, -1);
+  image(skyGFX, 0, -height);      
+  pop();
 
   // generate hills
   perlinHills(H/4,    COLOR.hillsFar,   hills.far);
   perlinHills(H/3.5,  COLOR.hillsMid,   hills.mid);
   perlinHills(H/3,    COLOR.hillsNear,  hills.near);        // draw closest hills
   perlinHills(H/3,    COLOR.hillsNear,  hills.near, 0.2);   // draw closest hills' reflection
-
   // recycle off-screen trees
   for (let i = treeline.length - 1; i >= 0; i--) {
     if (treeline[i].x < -treeline[i].baseWidth) { // as soon as tree is offscreen, yeet it
@@ -188,6 +192,14 @@ function draw() {
       tree.color = random(COLOR.trees);                       // set new color
       treeline.push(tree);                                    // add it to treeline
     }
+    /*
+    if (treeline[i].x > W+treeline[i].baseWidth) { // as soon as tree is offscreen, yeet it
+      let tree = treeline.splice(i, 1)[0];                    // yeet
+      tree.x = 0 - random(treeSpacing.min, treeSpacing.max);  // regen
+      tree.color = random(COLOR.trees);                       // set new color
+      treeline.push(tree);                                    // add it to treeline
+    }
+      */
   }
 
   // update trees
@@ -195,11 +207,15 @@ function draw() {
 
   // only update ground when scroll factor is a whole num
   if(groundScroll % 1 === 0){ 
+    let startX = 1 // (SPEED > 0) ? 1 : 0;
+    let destX = 0 //(SPEED > 0) ? 0 : 1;
+    let drawX = W - 1 //(SPEED > 0) ? W : 0;
+    
     // copy current ground into a buffer, leaving out the leftmost column,
     // which will shift ground leftward one px when we copy it back to screen
     bufferGFX.copy(groundGFX, 
-      1, 0, W, H, 
-      0, 0, W, H
+      startX, 0, W, H, 
+      destX, 0, W, H
     );
     // clear ground (this will preserve transparency on update)
     groundGFX.clear();
@@ -216,14 +232,10 @@ function draw() {
     // as it is. i found that i need the buffer object so that i can clear 
     // ground on update without losing the data and having an empty wetland
     
-    drawPerlinColumn(groundGFX, groundScroll, W - 1, H, ground);
+    drawPerlinColumn(groundGFX, groundScroll, drawX, H, ground);
   }
 
-  // my incredibly cursed solution to unwanted opacity loss
   image(groundGFX, 0, 0);
-  image(groundGFX, 0, 0);
-  image(groundGFX, 0, 0);
-  // TODO: ^fumigate
 
   // update ground scroll amt (helps us track perlin values for ground generation)
   groundScroll+=SPEED;
@@ -322,11 +334,11 @@ function pickGroundColor(c){
   let strokeAlpha = 255;
   if (c > 180) { // VEGETATION
     //if(c > random([220, 230, 240, 250])){ strokeColor = COLOR.ground.bushes; }
-    if(c > 250){ strokeColor = COLOR.ground.greener_grass; }
-    else if(c > 220){ strokeColor = COLOR.ground.greenest_grass; }
-    else if(c > 210){ strokeColor = COLOR.ground.greener_grass; }
-    else if(c > 200){ strokeColor = COLOR.ground.green_grass; }
-    else if(c > 190){ strokeColor = COLOR.ground.muddy_grass; }
+    if(c > 250)     { strokeColor = COLOR.ground.greener_grass;   }
+    else if(c > 220){ strokeColor = COLOR.ground.greenest_grass;  }
+    else if(c > 210){ strokeColor = COLOR.ground.greener_grass;   }
+    else if(c > 200){ strokeColor = COLOR.ground.green_grass;     }
+    else if(c > 190){ strokeColor = COLOR.ground.muddy_grass;     }
     else { strokeColor = COLOR.ground.mud; } 
 
     // detailing
@@ -396,6 +408,8 @@ function init(startX = 0){
     drawPerlinColumn(groundGFX, x, x, H, ground);
     drawPerlinColumn(skyGFX, x, x, H/2, sky);
   }
+
+  //image(skyGFX, 0, 0);  
 }
 
 // re-roll new noise vals and re-init generators
@@ -425,6 +439,7 @@ function regenerate() {
   loop();   // restart draw()
 }
 
+/*
 // RESIZE
 // TODO: fix bugs
 //        - slow reload
@@ -459,3 +474,4 @@ function resizeScreen() {
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
   //redrawCanvas(); // Redraw everything based on new size
 }
+*/
