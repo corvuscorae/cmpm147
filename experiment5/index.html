@@ -2,7 +2,7 @@
 <html>
 <head>
 	<!-- This title is used for tabs and bookmarks -->
-	<title>Experiment 5</title>
+	<title>Evolutionary Impressions</title>
 
 	<!-- Use UTF character set, a good idea with any webpage -->
 	<meta charset="UTF-8" />
@@ -34,7 +34,7 @@
 	<main id="content">
 		<section>
 
-			<h1>Experiment 5</h1>
+			<h1>Evolutionary Impressions</h1>
 
 			<div class="minor-section">
 				<select id="dropper"></select>
@@ -75,17 +75,27 @@
 
 			<div class="minor-section">
 				<h2>Description</h2>
-				<p>Parter coded with Jackie Sanchez!</p>
+				<p>Parter coded with Jackie Sanchez!
+
+					This experiment explores image-based evolution using p5.js. Starting from an inspiration image, the program samples average colors in random regions and draws basic shapes (rects and ellipses) to slowly recreate the image through generative mutation.
+
+					I collaborated with Jackie Sanchez on the initial framework, which included capturing average color from localized regions. We then expanded the system to support more shapes and increased their number to improve coverage.
+				</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Technical</h2>
-				<p>Describe in detail what you did technically and how it works?</p>
+				<p>
+					To keep color accuracy over time, the program re-samples colors every ~20 frames, avoiding performance hits while preventing drift. I also implemented an adaptive mutation rate that mimics the manual slider adjustments I was making: it starts slow, spikes briefly, then eases back—automated through a few counters and conditionals based on scoring performance.
+				</p>
+				<p>
+					Toward the end, I started noticing gaps in the final compositions—areas the shapes weren’t reaching. Doubling the shapes helped, tripling helped more, but a true fix would require a preprocessing pass to identify large structural regions in the source image (like Jupiter’s bands or an aurora). That’s on the to-do list for a future version.
+				</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Reflection</h2>
-				<p>Each person that worked on the code should reflect on the process, the difficulties, and the successes of the experiment.</p>
+				<p>Overall, I’m happy with the results. The system produces visually interesting approximations, and the code is modular enough to iterate on. It’s been a fun dive into mutation-based aesthetics—and there’s plenty of room to evolve it further.</p>
 			</div>
 
 		</section>
