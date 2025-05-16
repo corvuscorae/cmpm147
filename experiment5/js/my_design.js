@@ -5,37 +5,42 @@ function getInspirations() {
     return [
       {
         name: "Aurora Jupiter",
-        assetUrl: "../../img/jupiter.jpg",
+        assetUrl: "./img/jupiter.jpg",
         credit: "Hubble Space Telescope, 2016",
       },
       {
         name: "Mars",
-        assetUrl: "../../img/mars.png",
+        assetUrl: "./img/mars.png",
         credit: "NASA/JPL Viking Mars Mosaic", // TODO: get year
       },
       {
         name: "Pluto",
-        assetUrl: "../../img/pluto.jpg",
+        assetUrl: "./img/pluto.jpg",
         credit: "NASA New Horizons, July 2015",
       },
       {
         name: "Not moon",
-        assetUrl: "../../img/DeathStar.jpg",
+        assetUrl: "./img/DeathStar.jpg",
         credit: "https://starwars.fandom.com/wiki/DS-2_Death_Star_II_Mobile_Battle_Station" // TODO: find OG credit
       },
       {
         name: "Sagan (dog)",
-        assetUrl: "../../img/sagan.jpg",
+        assetUrl: "./img/sagan.jpg",
         credit: "self"
       },
       {
         name: "Raven (v1)",
-        assetUrl: "../../img/raven_A.png",
+        assetUrl: "./img/raven_A.png",
         credit: "self"
       },
       {
         name: "Raven (v2)",
-        assetUrl: "../../img/raven_B.png",
+        assetUrl: "./img/raven_B.png",
+        credit: "self"
+      },
+      {
+        name: "Self-portrait",
+        assetUrl: "./img/selfie.jpg",
         credit: "self"
       }
     ];
