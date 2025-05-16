@@ -48,12 +48,10 @@ class Tree {
     
     let tw = this.baseWidth;
     let th = this.height;
-    let color = lerpColor(this.color[0], this.color[1], lerp_n)
-    push();
-    noStroke();
+
     // draw trees
-    color.setAlpha(255); 
-    fill(color);
+    this.color.setAlpha(255); 
+    fill(this.color);
     for(let i = 1; i <= this.tiers; i++){
       let mult = (i === 1) ? 0 : 1; // so we can draw our ground level part of the tree (no floaters)
       triangle(
@@ -65,14 +63,14 @@ class Tree {
 
     // add reflections
     th *= 0.5;   // squish em
-    color.setAlpha(100);
-    fill(color);
+    this.color.setAlpha(100);
+    fill(this.color);
     triangle(
       this.x, ground+th,
       this.x - tw/2, ground,
       this.x + tw/2, ground
     );
-    pop();
+
   }
 }
 
@@ -81,11 +79,6 @@ class Tree {
 let COLOR; // defined in setup()
 let SPEED = 0.25;
 
-// COLOR LERPING VARIABLES
-let lerp_n = 0;
-let lerp_d = 0.005;
-let lerp_dir = 1;
-
 // tree generation stuff
 let treeline = [];
 let treeSpacing = {min: 3, max: 30};
@@ -93,18 +86,9 @@ let treeSpacing = {min: 3, max: 30};
 // hill generation stuff
 let hillSeed = 0;
 let hills = { // noise settings for hill generation @ different distances
-  far:  
-    new NoiseSettings(Math.floor(Math.random() * 2556), 100, 0.009, 
-    {scroll: 0, parallax: 10 }
-  ),
-  mid:  
-    new NoiseSettings(Math.floor(Math.random() * 2556), 100, 0.007, 
-    {scroll: 0, parallax: 5 }
-  ),
-  near: 
-    new NoiseSettings(Math.floor(Math.random() * 2556), 90,  0.007, 
-    {scroll: 0, parallax: 2.5 }
-  ),
+  far:  new NoiseSettings(Math.floor(Math.random() * 2556), 100, 0.009, { parallax: 10 }),
+  mid:  new NoiseSettings(Math.floor(Math.random() * 2556), 100, 0.007, { parallax: 5 }),
+  near: new NoiseSettings(Math.floor(Math.random() * 2556), 90,  0.007, { parallax: 2.5 }),
 }
 
 // sky generation stuff
@@ -144,31 +128,27 @@ function setup() {
   // pallete generated here: https://mycolor.space/?hex=%236A994E&sub=1 
   COLOR = {
     ground: {
-      green_grass:    [ color(76, 123, 50),   color(0,0,0)], // #4c7b32
-      greener_grass:  [ color(95, 143, 70),   color(10,10,10)], // #5f8f46
-      greenest_grass: [ color(116, 164, 88),  color(20,20,20)], // #74a458
-      dry_grass:      [ color(175, 168, 113), color(30,30,30)], // #afa871
-      muddy_grass:    [ color(151, 144, 92),  color(40,40,40)], // #97905c
-      mud:            [ color(126, 120, 70),  color(50,50,50)], // #7e7846
-      dark_water:     [ color(71, 202, 202),  color(80,80,80)], // #47caca
-      water:          [ color(101, 229, 229), color(100,100,100)], // #65e5e5
-      light_water:    [ color(131, 255, 255), color(120,120,120)], // #83ffff
+      green_grass:    color(76, 123, 50),    // #4c7b32
+      greener_grass:  color(95, 143, 70),    // #5f8f46
+      greenest_grass: color(116, 164, 88),   // #74a458
+      dry_grass:      color(175, 168, 113),  // #afa871
+      muddy_grass:    color(151, 144, 92),   // #97905c
+      mud:            color(126, 120, 70),   // #7e7846
+      dark_water:     color(71, 202, 202),   // #47caca
+      water:          color(101, 229, 229),  // #65e5e5
+      light_water:    color(131, 255, 255),  // #83ffff
     },
     sky: {
-      clear:          [ color(0, 194, 255),   ],  // #00c2ff
-      clearish:       [ color(79, 206, 250),  ],  // #4fcefa
-      mid:            [ color(101, 215, 241), ],  // #65d7f1
-      cloudclear:     [ color(251, 246, 236), ],  // #fbf6ec
-      cloud:          [ color(246, 237, 217), ],  // #f6edd9
+      clear:          color(0, 194, 255),    // #00c2ff
+      clearish:       color(79, 206, 250),   // #4fcefa
+      mid:            color(101, 215, 241),  // #65d7f1
+      cloudclear:     color(251, 246, 236),  // #fbf6ec
+      cloud:          color(246, 237, 217),  // #f6edd9
     },
-    hillsFar:         [ color(0, 148, 124),   color(0,0,0)],   // #00947c
-    hillsMid:         [ color(11, 171, 103),  color(25,25,25)],   // #0bab67
-    hillsNear:        [ color(111, 190, 67),  color(50,50,50)],   // #6fbe43
-    trees: [
-      [color(71, 152, 27), color(10,10,10)],   // #47981b, 
-      [color(26, 115, 0),  color(20,20,20)],   // #1a7300, 
-      [color(44, 128, 0),   color(40,40,40)]   // #2c8000
-    ],
+    hillsFar:         color(0, 148, 124),     // #00947c
+    hillsMid:         color(11, 171, 103),    // #0bab67
+    hillsNear:        color(111, 190, 67),    // #6fbe43
+    trees: [color("#47981b"), color("#1a7300"), color("#2c8000")],
   }
 
   // place our canvas, making it fit our container
@@ -191,16 +171,8 @@ function setup() {
 }
 
 function draw() {  
-  if(lerp_n === 1){ lerp_dir = -1*SPEED; }
-  if(lerp_n === 0){ lerp_dir = SPEED; }
-  
-  lerp_n += lerp_d * SPEED/4 * lerp_dir;
-  lerp_n = constrain(lerp_n, 0, 1);
-
   //if(frameCount % 10 === 1){ console.log(W, H); }
   // put sky as background
-
-
   push();
   image(skyGFX, 0, 0);  
   scale(1, -1);
@@ -256,6 +228,10 @@ function draw() {
     // clear buffer (again, to preserve transparency)
     bufferGFX.clear();
 
+    // note: there may be a better way to handle this, but i like the outcome
+    // as it is. i found that i need the buffer object so that i can clear 
+    // ground on update without losing the data and having an empty wetland
+    
     drawPerlinColumn(groundGFX, groundScroll, drawX, H, ground);
   }
 
@@ -263,58 +239,35 @@ function draw() {
 
   // update ground scroll amt (helps us track perlin values for ground generation)
   groundScroll+=SPEED;
-
-  /*
-  if(frameCount % 10 === 0){
-    loadPixels();
-    for(let y = H/2 - 100; y < H/2 + 100; y++){
-      for(let x = W/2 - 100; x < W/2 + 100; x++){
-        let index = (y * W + x) * 4;
-        pixels[index + 0] = 0
-        pixels[index + 1] = 0
-        pixels[index + 2] = 0
-      }
-    }
-    updatePixels();
-  }
-  */
 }
 
 // 1D perlin function to generate hills
 function perlinHills(elevation, color, ns, squishReflect){
   noiseSeed(ns.seed);
   
-  color = lerpColor(color[0], color[1], lerp_n);
-
   if(squishReflect){ color.setAlpha(150); } // low opacity for reflections
   else{ color.setAlpha(255); }
 
-  push();
   noStroke();
   fill(color);
-  //stroke(color);
-  //strokeWeight(5);
   beginShape();
   for (let x = 0; x <= W; x++) {
     // shift hills at rate of speed/parallax; more parallax = slower shift
-    let nx = (x + ns.scroll) * ns.scale; 
+    let nx = ns.scale * (x + frameCount * SPEED/ns.parallax); 
     let y = ns.level * noise(nx) + elevation + 0;
+
     if (squishReflect) {
       // adjust y to be upside down and squished, for reflections
       let hillHeight = y - H/2;
-      y = (H/2 - hillHeight * squishReflect);
+      y = H/2 - hillHeight * squishReflect;
     }
 
     // start shape
     vertex(x, y);
-    //line(x, y, x, H/2);
-
   }
   vertex(W, H/2 + 1); 
   vertex(0, H/2 + 1); // close shape at bottom
   endShape(CLOSE);
-  pop();
-  ns.scroll += SPEED/ns.parallax;
 }
 
 /**
@@ -342,7 +295,6 @@ function drawPerlinColumn(gfx, noiseX, screenX, maxY, ns)
     ns.place(gfx, c, screenX, y, maxY); // call place() function
   }
 }
-
 
 // color picker for sky generation
 function pickSkyColor(c){
@@ -373,7 +325,7 @@ function pickSkyColor(c){
   else if(c > 155){ strokeColor = COLOR.sky.clearish; }
   else{ strokeColor = COLOR.sky.clear; }
 
-  return strokeColor[0];
+  return strokeColor;
 }
 
 // color picker for ground generation
@@ -440,12 +392,8 @@ function pickGroundColor(c){
     }
   }
   
-  let color = lerpColor(strokeColor[0], strokeColor[1], lerp_n);
-  //strokeColor[0].setAlpha(strokeAlpha);   // low opacity for sky reflection!
-  //return strokeColor[0];
-  color.setAlpha(strokeAlpha);   // low opacity for sky reflection!
-  return color;
-
+  strokeColor.setAlpha(strokeAlpha);   // low opacity for sky reflection!
+  return strokeColor;
 }
 
 function init(startX = 0){
