@@ -5,28 +5,43 @@ function getInspirations() {
     return [
       {
         name: "Aurora Jupiter",
-        assetUrl: "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2016/06/STScI-01EVVGT8EHJ3MJJR8BA2CD2CMZ.tif?w=1000&h=1000&fit=crop&crop=faces%2Cfocalpoint",
+        assetUrl: "./img/jupiter.jpg",
         credit: "Hubble Space Telescope, 2016",
       },
       {
         name: "Mars",
-        assetUrl: "https://cdn.mos.cms.futurecdn.net/L868HCTDT8ueAXXrcyXoWc-650-80.jpg.webp",
+        assetUrl: "./img/mars.png",
         credit: "NASA/JPL Viking Mars Mosaic", // TODO: get year
       },
       {
         name: "Pluto",
-        assetUrl: "https://cdn.mos.cms.futurecdn.net/DoZSMXF87kCuzbymsuEFHo-650-80.jpg.webp",
+        assetUrl: "./img/pluto.jpg",
         credit: "NASA New Horizons, July 2015",
       },
       {
-        name: "Moon",
-        assetUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Supermoon_Nov-14-2016-minneapolis.jpg/1024px-Supermoon_Nov-14-2016-minneapolis.jpg",
-        credit: "wikioedia" // TODO: find OG credit
+        name: "Not moon",
+        assetUrl: "./img/DeathStar.jpg",
+        credit: "https://starwars.fandom.com/wiki/DS-2_Death_Star_II_Mobile_Battle_Station" // TODO: find OG credit
       },
       {
-        name: "Not moon",
-        assetUrl: "https://upload.wikimedia.org/wikipedia/en/e/ee/DeathStar2.jpg",
-        credit: "https://upload.wikimedia.org/wikipedia/en/e/ee/DeathStar2.jpg" // TODO: find OG credit
+        name: "Sagan (dog)",
+        assetUrl: "./img/sagan.jpg",
+        credit: "self"
+      },
+      {
+        name: "Raven (v1)",
+        assetUrl: "./img/raven_A.png",
+        credit: "self"
+      },
+      {
+        name: "Raven (v2)",
+        assetUrl: "./img/raven_B.png",
+        credit: "self"
+      },
+      {
+        name: "Self-portrait",
+        assetUrl: "./img/selfie.jpg",
+        credit: "self"
       },
       {
         name: "Juptier 2",
